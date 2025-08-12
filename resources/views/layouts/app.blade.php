@@ -17,100 +17,163 @@
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <!-- Custom Chat Styles -->
     <style>
-/* Chat container */
-.chat-messages {
-    max-height: 500px;
-    overflow-y: auto;
-    padding: 1rem;
-    background-color: #f9f9f9;
-}
+        body {
+            background: #f5f7fb;
+            font-family: 'san francisco', sans-serif;
+        }
 
-/* Message bubble base */
-.chat-message-right,
-.chat-message-left {
-    display: flex;
-    margin-bottom: 1rem;
-    align-items: flex-end;
-}
+        .card {
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
 
-/* User avatar */
-.chat-message-right img,
-.chat-message-left img {
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-}
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background-color: #fdfdfd;
+        }
 
-/* Message content container */
-.chat-message-right .message-content,
-.chat-message-left .message-content {
-    max-width: 70%;
-    padding: 10px 15px;
-    border-radius: 20px;
-    position: relative;
-    font-size: 14px;
-    line-height: 1.4;
-}
+        /* Chat header */
+        .chat-header {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-/* Right bubble (current user) */
-.chat-message-right {
-    justify-content: flex-end;
-}
+        .chat-header img {
+            border-radius: 50%;
+            border: 2px solid #eee;
+        }
 
-.chat-message-right .message-content {
-    background: #0d6efd; /* Bootstrap primary */
-    color: white;
-    border-bottom-right-radius: 0;
-}
+        .chat-header strong {
+            font-size: 1rem;
+            color: #333;
+            text-transform: capitalize;
+        }
 
-/* Left bubble (other user) */
-.chat-message-left {
-    justify-content: flex-start;
-}
+        /* Message bubbles */
+        .chat-message-right,
+        .chat-message-left {
+            display: flex;
+            margin-bottom: 1rem;
+            align-items: flex-end;
+        }
 
-.chat-message-left .message-content {
-    background: #e4e6eb;
-    color: #050505;
-    border-bottom-left-radius: 0;
-}
+        .chat-message-right {
+            justify-content: flex-end;
+        }
 
-/* Sender name */
-.chat-message-right .sender-name,
-.chat-message-left .sender-name {
-    font-weight: 600;
-    margin-bottom: 5px;
-}
+        .chat-message-left {
+            justify-content: flex-start;
+        }
 
-/* Timestamp styling */
-.chat-message-right .timestamp,
-.chat-message-left .timestamp {
-    font-size: 11px;
-    color: #888;
-    margin-top: 4px;
-    text-align: right;
-}
+        .chat-message-right .message-content {
+            background: linear-gradient(135deg, #4f93ff, #1c72e8);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 20px 20px 0 20px;
+            max-width: fit-content;
+            font-size: 14px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
 
-/* Margin between avatar and message bubble */
-.chat-message-right img {
-    margin-left: 10px;
-}
+        .chat-message-left .message-content {
+            background: #f1f1f1;
+            color: #333;
+            padding: 10px 14px;
+            border-radius: 20px 20px 20px 0;
+            max-width: fit-content;
+            font-size: 14px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
 
-.chat-message-left img {
-    margin-right: 10px;
-}
-</style>
+        /* Timestamp */
+        .timestamp {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+            text-align: right;
+        }
 
+        /* Input area */
+        .chat-input {
+            background: #fff;
+            border-top: 1px solid #eee;
+            padding: 10px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input input {
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            padding: 8px 14px;
+            flex: 1;
+        }
+
+        .chat-input button {
+            border-radius: 20px;
+            padding: 8px 16px;
+        }
+
+        /* Friend list */
+        .friend-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            gap: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            text-transform: capitalize;
+        }
+
+        .friend-item:hover {
+            background: #f0f5ff;
+        }
+
+        .friend-item img {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+        }
+
+        .friend-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .friend-status {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .chat-online {
+            color: #31a24c;
+        }
+
+        .chat-offline {
+            color: #ccc;
+        }
+    </style>
 </head>
 
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/home') }}">
-                    {{ config('app.name', 'Laravel') }}
+                <a class="navbar-brand" href="{{ url('/home') }}" style="font-weight: bold; font-size: x-large;">
+                   ChatApp
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -123,7 +186,6 @@
                     <ul class="navbar-nav me-auto">
 
                     </ul>
-
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
@@ -169,16 +231,35 @@
             @yield('content')
         </main>
     </div>
-    <!-- ✅ Load jQuery BEFORE Bootstrap -->
-    
-    {{-- jquery --}}
+
+    <!-- jQuery (load first) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    {{-- socket.io --}}
+    
+    <!-- Socket.io -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js"
         integrity="sha512-8BHxHDLsOHx+flIrQ0DrZcea7MkHqRU5GbTHmbdzMRnAaoCIkZ97PqZcXJkKZckMMhqfoeaJE+DNUVuyoQsO3Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    
+    <!-- Push.js for notifications -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.12/push.min.js" 
+        integrity="sha512-DjIQO7OxE8rKQrBLpVCk60Zu0mcFfNx2nVduB96yk5HS/poYZAkYu5fxpwXj3iet91Ezqq2TNN6cJh9Y5NtfWg==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Test Push.js availability -->
+    <script>
+        window.addEventListener('load', function() {
+            if (typeof Push === 'undefined') {
+                console.error('Push.js library failed to load');
+            } else {
+                console.log('Push.js library loaded successfully');
+                console.log('Current permission:', Push.Permission.get());
+            }
+        });
+    </script>
 
     @yield('scripts')
 </body>
