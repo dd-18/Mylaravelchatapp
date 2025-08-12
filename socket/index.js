@@ -72,12 +72,19 @@ io.on('connection', function (socket) {
         });
     });
 
-    socket.on('read_message', function (id) {
-        con.query('UPDATE chats SET is_read = 1 WHERE id = ?', [id], function (err, res) {
+    socket.on('read_message', function (data) {
+    const { from_user_id, to_user_id } = data;
+
+    con.query(
+        'UPDATE chats SET is_read = 1 WHERE from_user_id = ? AND to_user_id = ?',
+        [from_user_id, to_user_id],
+        function (err, res) {
             if (err) throw err;
-            console.log('Message marked as read:', id);
-        });
-    });
+            console.log(`Messages marked as read from ${from_user_id} to ${to_user_id}`);
+        }
+    );
+});
+
 
 
     socket.on('disconnect', function () {
