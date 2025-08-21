@@ -27,7 +27,7 @@ con.connect(function (err) {
     console.log('Connected to database!');
 });
 
-// Database disconnection
+//Database disconnection
 con.on('error', function(err) {
     if(err.code === 'PROTOCOL_CONNECTION_LOST') {
         console.log('Database connection lost. Attempting to reconnect...');
