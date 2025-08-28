@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('user_image')->nullable();
             $table->tinyInteger('is_online')->default(0); // Assuming 'is_online' is a tiny integer
             $table->rememberToken();
             $table->timestamps();

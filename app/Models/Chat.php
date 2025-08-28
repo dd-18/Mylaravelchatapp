@@ -25,4 +25,8 @@ class Chat extends Model
     {
         return $this->belongsTo(User::class, 'friend_id');
     }
+    public function recipient()
+    {
+        return $this->belongsTo(User::class, 'other_user_id');
+    }
 }

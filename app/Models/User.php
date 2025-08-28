@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'user_image',
     ];
 
     /**
@@ -44,5 +45,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Chat::class, 'user_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Chat::class, 'other_user_id');
     }
 }

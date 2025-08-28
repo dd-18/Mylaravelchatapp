@@ -24,7 +24,7 @@
     <style>
         body {
             background: #f5f7fb;
-            font-family: 'san francisco', sans-serif;
+            font-family: 'Nunito', sans-serif;
         }
 
         .card {
@@ -33,11 +33,12 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
+        /* Chat messages */
         .chat-messages {
             flex: 1;
             overflow-y: auto;
             padding: 1rem;
-            background-color: #fdfdfd;
+            background-color: #fff;
         }
 
         /* Chat header */
@@ -53,6 +54,8 @@
         .chat-header img {
             border-radius: 50%;
             border: 2px solid #eee;
+            width: 40px;
+            height: 40px;
         }
 
         .chat-header strong {
@@ -82,9 +85,10 @@
             color: #fff;
             padding: 10px 14px;
             border-radius: 20px 20px 0 20px;
-            max-width: fit-content;
             font-size: 14px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            max-width: 100%;
+            word-wrap: break-word;
         }
 
         .chat-message-left .message-content {
@@ -92,9 +96,10 @@
             color: #333;
             padding: 10px 14px;
             border-radius: 20px 20px 20px 0;
-            max-width: fit-content;
             font-size: 14px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            max-width: 100%;
+            word-wrap: break-word;
         }
 
         /* Timestamp */
@@ -110,18 +115,19 @@
             background: #fff;
             border-top: 1px solid #eee;
             padding: 10px;
-            display: flex;
-            gap: 8px;
+            display: relative;
+            align-items: center;
+            gap: 10px;
         }
 
-        .chat-input input {
+        .chat-input input[type="text"] {
             border-radius: 20px;
             border: 1px solid #ccc;
             padding: 8px 14px;
             flex: 1;
         }
 
-        .chat-input button {
+        .chat-input button.btn {
             border-radius: 20px;
             padding: 8px 16px;
         }
@@ -135,7 +141,6 @@
             border-radius: 12px;
             cursor: pointer;
             transition: background 0.2s ease;
-            text-transform: capitalize;
         }
 
         .friend-item:hover {
@@ -165,15 +170,33 @@
         .chat-offline {
             color: #ccc;
         }
+
+        /* Image preview */
+        #image-preview-container {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px dashed #ddd;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+
+            .chat-message-right .message-content,
+            .chat-message-left .message-content {
+                max-width: 90%;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div id="app">
+        <!-- Navbar -->
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/home') }}" style="font-weight: bold; font-size: x-large;">
-                   ChatApp
+                <a class="navbar-brand fw-bold fs-4" href="{{ url('/home') }}">
+                    ChatApp
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -182,21 +205,17 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
+                    <!-- Left -->
+                    <ul class="navbar-nav me-auto"></ul>
 
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
+                    <!-- Right -->
                     <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                                 </li>
                             @endif
-
                             @if (Route::has('register'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
@@ -210,15 +229,15 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('home') }}">Home</a>
+                                    <a class="dropdown-item" href="{{ route('profile.edit') }}">Edit Profile</a>
+                                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}">Admin Panel</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
-                                        onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
+                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                        class="d-none">@csrf</form>
                                 </div>
                             </li>
                         @endguest
@@ -232,31 +251,26 @@
         </main>
     </div>
 
-    <!-- jQuery (load first) -->
+    <!-- jQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    
+
     <!-- Socket.io -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js"
-        integrity="sha512-8BHxHDLsOHx+flIrQ0DrZcea7MkHqRU5GbTHmbdzMRnAaoCIkZ97PqZcXJkKZckMMhqfoeaJE+DNUVuyoQsO3Q=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
-    <!-- Bootstrap JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-    
-    <!-- Push.js for notifications -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.12/push.min.js" 
-        integrity="sha512-DjIQO7OxE8rKQrBLpVCk60Zu0mcFfNx2nVduB96yk5HS/poYZAkYu5fxpwXj3iet91Ezqq2TNN6cJh9Y5NtfWg==" 
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <!-- Test Push.js availability -->
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Push.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.12/push.min.js"
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <script>
         window.addEventListener('load', function() {
             if (typeof Push === 'undefined') {
-                console.error('Push.js library failed to load');
+                console.error('Push.js failed to load');
             } else {
-                console.log('Push.js library loaded successfully');
-                console.log('Current permission:', Push.Permission.get());
+                console.log('Push.js loaded. Permission:', Push.Permission.get());
             }
         });
     </script>

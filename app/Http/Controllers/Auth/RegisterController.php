@@ -52,6 +52,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'user_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
     }
 
@@ -63,10 +64,22 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $imageName = null;
+        $request = request();
+
+        if ($request->hasFile('user_image')) {
+            // Generate unique filename
+            $imageName = time() . '_' . uniqid() . '.' . $request->file('user_image')->getClientOriginalExtension();
+            
+            // Store the image using the public disk
+            $request->file('user_image')->storeAs('users', $imageName, 'public');
+        }
+
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'user_image' => $imageName,
         ]);
     }
 }
