@@ -4,50 +4,63 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Chat;
+use App\Models\Chat; // or Message, depending on your DB
 
 class AdminController extends Controller
 {
-    // Dashboard Overview
+    /**
+     * Dashboard Overview
+     */
     public function dashboard()
     {
-        $usersCount = User::count();
+        $usersCount   = User::count();
         $messagesCount = Chat::count();
-        $onlineUsers = User::where('is_online', 1)->count();
+        $onlineUsers  = User::where('is_online', 1)->count();
 
         return view('admin.dashboard', compact('usersCount', 'messagesCount', 'onlineUsers'));
     }
 
-    // List Users
+    /**
+     * Manage Users
+     */
     public function users()
     {
         $users = User::orderBy('id', 'desc')->paginate(10);
         return view('admin.users', compact('users'));
     }
 
-    // Block/Unblock User
-    public function toggleUserStatus($id)
-    {
-        $user = User::findOrFail($id);
-        $user->is_blocked = !$user->is_blocked; // toggle status
-        $user->save();
-
-        return back()->with('success', 'User status updated successfully!');
-    }
-
-    // List Messages
+    /**
+     * Manage Messages
+     */
     public function messages()
     {
-        $messages = Chat::with(['user', 'recipient'])->orderBy('id', 'desc')->paginate(20);
+        $messages = Chat::with(['user', 'recipient']) // ✅ eager load sender & recipient
+            ->orderBy('id', 'desc')
+            ->paginate(20);
+
         return view('admin.messages', compact('messages'));
     }
 
-    // Delete Message
+    /**
+     * Toggle User Block/Unblock
+     */
+    public function toggleUserStatus($id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_blocked = !$user->is_blocked; // flip status
+        $user->save();
+
+        return redirect()->back()->with('success', 'User status updated successfully.');
+    }
+
+    /**
+     * Delete a Message
+     */
     public function deleteMessage($id)
     {
-        $message = Chat::findOrFail($id);
-        $message->delete();
+        $msg = Chat::findOrFail($id);
+        $msg->delete();
 
-        return back()->with('success', 'Message deleted successfully!');
+        return redirect()->back()->with('success', 'Message deleted successfully.');
     }
 }
