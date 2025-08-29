@@ -12,15 +12,16 @@ const mysql = require('mysql');
 const moment = require('moment');
 
 const sockets = {};
-const typingUsers = {}; // Track typing users
-const onlineUsers = new Set(); // Track online users
+const typingUsers = {}; 
+const onlineUsers = new Set(); 
 
-// ---------- MySQL Connection ----------
+//  MySQL Connection 
 let con = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'laravel_chatappfinal'
+    database: 'laravel_chatappfinal',
+    charset: "utf8mb4" //for emoji support
 });
 
 con.connect(function (err) {
@@ -54,7 +55,7 @@ function handleDisconnect() {
     });
 }
 
-// ---------- Socket.IO Logic ----------
+// Socket.IO Logic
 io.on('connection', function (socket) {
     const userId = socket.handshake.query.user_id;
     if (!userId) {
@@ -63,7 +64,7 @@ io.on('connection', function (socket) {
         return;
     }
 
-    // 🔒 Blocked user check before continuing
+    // Blocked user check before continuing
     con.query('SELECT is_blocked FROM users WHERE id = ?', [userId], function (err, results) {
         if (err) {
             console.error('Error checking blocked status:', err);
@@ -77,7 +78,7 @@ io.on('connection', function (socket) {
             return;
         }
 
-        // ✅ Normal connection logic continues here
+        // Normal connection logic continues here
         console.log('User attempting connection:', userId);
 
         if (!sockets[userId]) sockets[userId] = [];
@@ -133,7 +134,7 @@ io.on('connection', function (socket) {
             }
         }
 
-        // ---------- Socket Events ----------
+        // Socket Events 
         socket.on('join_chat', function (data) {
             if (!data.user_id || !data.other_user_id) {
                 console.error('Invalid join_chat data');
@@ -216,7 +217,7 @@ io.on('connection', function (socket) {
                 return;
             }
 
-            // 🔒 Blocked user check before sending
+            // Blocked user check before sending
             con.query('SELECT is_blocked FROM users WHERE id = ?', [data.user_id], function (err, results) {
                 if (err || results.length === 0 || results[0].is_blocked === 1) {
                     console.log(`Blocked user (${data.user_id}) tried to send a message.`);
@@ -410,7 +411,7 @@ io.on('connection', function (socket) {
     });
 });
 
-// ---------- Start Server ----------
+
 const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
     console.log(`Socket server running on port ${PORT}`);
