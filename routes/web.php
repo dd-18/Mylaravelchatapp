@@ -6,6 +6,7 @@ use App\Http\Controllers\ImageUploadController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PageController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -16,6 +17,7 @@ Auth::routes();
 
 // Home route (optional user id)
 Route::get('/home/{id?}', [HomeController::class, 'index'])->name('home');
+Route::get('/about', [PageController::class, 'about'])->name('about');
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {
@@ -30,7 +32,7 @@ Route::middleware('auth')->group(function () {
     // Admin routes (protected by AdminMiddleware)
     Route::prefix('admin')
         ->name('admin.')
-        ->middleware('admin') // ✅ Protect with middleware
+        ->middleware('admin') // Protect with middleware
         ->group(function () {
             Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
             Route::get('/users', [AdminController::class, 'users'])->name('users');

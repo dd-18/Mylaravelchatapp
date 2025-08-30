@@ -25,7 +25,7 @@ class AdminController extends Controller
      */
     public function users()
     {
-        $users = User::orderBy('id', 'desc')->paginate(10);
+        $users = User::orderBy('id', 'asc')->paginate(10);
         return view('admin.users', compact('users'));
     }
 
@@ -34,7 +34,7 @@ class AdminController extends Controller
      */
     public function messages()
     {
-        $messages = Chat::with(['user', 'recipient']) // ✅ eager load sender & recipient
+        $messages = Chat::with(['user', 'recipient']) // load sender & recipient
             ->orderBy('id', 'desc')
             ->paginate(20);
 

@@ -1,54 +1,44 @@
 @extends('layouts.admin')
 
 @section('admin-content')
-    <h2 class="mb-4">👥 Manage Users</h2>
+    <h2 class="mb-4 fw-bold">👥 Manage Users</h2>
 
-    <div class="card shadow-sm border-0">
+    <div class="card shadow-lg border-0 rounded-4">
         <div class="card-body">
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light sticky-top">
                     <tr>
                         <th>#</th>
-                        <th>Profile</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Status</th>
                         <th>Joined</th>
-                        <th>Action</th>
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($users as $user)
                         <tr>
                             <td>{{ $user->id }}</td>
-                            {{-- <td>
-                                <img src="{{ $user->user_image
-                                    ? (Str::startsWith($user->user_image, ['http', 'https'])
-                                        ? $user->user_image
-                                        : asset('storage/' . $user->user_image))
-                                    : 'https://via.placeholder.com/40' }}"
-                                    alt="User Image" class="rounded-circle border" width="40" height="40">
-                            </td> --}}
-
-                            <td>{{ $user->name }}</td>
+                            <td class="fw-semibold" style="text-transform: capitalize;">{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>
                                 @if ($user->is_online)
-                                    <span class="badge bg-success">Online</span>
+                                    <span class="badge rounded-pill bg-success px-3">Online</span>
                                 @else
-                                    <span class="badge bg-secondary">Offline</span>
+                                    <span class="badge rounded-pill bg-secondary px-3">Offline</span>
                                 @endif
 
                                 @if ($user->is_blocked ?? false)
-                                    <span class="badge bg-danger ms-1">Blocked</span>
+                                    <span class="badge rounded-pill bg-danger px-3 ms-1">Blocked</span>
                                 @endif
                             </td>
                             <td>{{ $user->created_at->format('d M Y') }}</td>
-                            <td>
+                            <td class="text-center">
                                 <form method="POST" action="{{ route('admin.users.toggle', $user->id) }}">
                                     @csrf
                                     <button type="submit"
-                                        class="btn btn-sm {{ $user->is_blocked ? 'btn-success' : 'btn-danger' }}">
+                                        class="btn btn-sm rounded-pill {{ $user->is_blocked ? 'btn-success' : 'btn-danger' }}">
                                         {{ $user->is_blocked ? 'Unblock' : 'Block' }}
                                     </button>
                                 </form>
@@ -58,9 +48,20 @@
                 </tbody>
             </table>
 
-            <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-center mt-3">
                 {{ $users->links() }}
             </div>
         </div>
     </div>
+
+    <style>
+        table thead {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        table tbody tr:hover {
+            background: #f8f9fa !important;
+            transition: background 0.2s ease;
+        }
+    </style>
 @endsection
