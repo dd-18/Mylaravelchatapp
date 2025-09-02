@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/893/893257.png">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/893/893257.png">
+
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -12,7 +13,7 @@
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito:400,600,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.bunny.net/css?family=Inter:400,500,600,700&display=swap" rel="stylesheet">
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
@@ -22,62 +23,184 @@
 
     <!-- Custom Chat Styles -->
     <style>
-        body {
-            background: linear-gradient(135deg, #f9fbfd, #eef3f9);
-            font-family: 'Nunito', sans-serif;
-            min-height: 100vh;
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --gray-50: #f9fafb;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --white: #ffffff;
+            --green: #10b981;
+            --border: #e5e7eb;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
+        body {
+            background: var(--gray-50);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            color: var(--gray-800);
+        }
+
+        /* Navbar */
         .navbar {
-            border-bottom: 1px solid #e6e9f2;
+            background: var(--white) !important;
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow);
         }
 
         .navbar-brand {
             font-weight: 700;
             font-size: 1.5rem;
-            color: #2563eb !important;
+            color: var(--primary) !important;
         }
 
+        .nav-link {
+            color: var(--gray-600) !important;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary) !important;
+        }
+
+        /* User Profile in Navbar */
+        .navbar-user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray-700) !important;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .navbar-user-profile:hover {
+            background: var(--gray-100);
+            color: var(--gray-800) !important;
+            text-decoration: none;
+        }
+
+        .navbar-profile-image {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border);
+            transition: border-color 0.2s ease;
+        }
+
+        .navbar-user-profile:hover .navbar-profile-image {
+            border-color: var(--primary);
+        }
+
+        .navbar-profile-fallback {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-600);
+            font-size: 1rem;
+            border: 2px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .navbar-user-profile:hover .navbar-profile-fallback {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        .dropdown-menu {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown-item {
+            color: var(--gray-700);
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-item:hover {
+            background: var(--gray-100);
+            color: var(--gray-800);
+        }
+
+        .dropdown-item.text-danger {
+            color: #dc3545 !important;
+        }
+
+        .dropdown-item.text-danger:hover {
+            background: #dc3545 !important;
+            color: var(--white) !important;
+        }
+
+        .dropdown-divider {
+            margin: 0.5rem 0;
+            border-color: var(--border);
+        }
+
+        /* Cards */
         .card {
-            border-radius: 18px;
+            border-radius: 12px;
+            background: var(--white);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
             overflow: hidden;
-            background: #fff;
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
         }
 
-        /* Chat messages */
+        /* Chat Messages */
         .chat-messages {
             flex: 1;
             overflow-y: auto;
             padding: 1rem;
-            background: #fff;
-            border-radius: 16px;
+            background: var(--white);
+            border-radius: 12px;
         }
 
-        /* Chat header */
+        /* Chat Header */
         .chat-header {
-            background: #f9fafc;
-            border-bottom: 1px solid #eee;
-            padding: 12px 16px;
+            background: var(--gray-100);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 0.75rem;
         }
 
         .chat-header img {
             border-radius: 50%;
-            border: 2px solid #e2e8f0;
+            border: 2px solid var(--border);
             width: 42px;
             height: 42px;
         }
 
         .chat-header strong {
-            font-size: 1.05rem;
-            color: #1e293b;
+            font-size: 1.1rem;
+            color: var(--gray-800);
             font-weight: 600;
         }
 
-        /* Message bubbles */
+        /* Message Bubbles */
         .chat-message-right,
         .chat-message-left {
             display: flex;
@@ -94,133 +217,127 @@
         }
 
         .chat-message-right .message-content {
-            background: linear-gradient(135deg, #2563eb, #1e40af);
-            color: #fff;
-            padding: 10px 14px;
-            border-radius: 20px 20px 4px 20px;
-            font-size: 14px;
-            box-shadow: 0 3px 8px rgba(37, 99, 235, 0.2);
+            background: var(--primary);
+            color: var(--white);
+            padding: 0.75rem 1rem;
+            border-radius: 18px 18px 4px 18px;
+            font-size: 0.95rem;
             max-width: 100%;
             word-wrap: break-word;
+            box-shadow: var(--shadow);
         }
 
         .chat-message-left .message-content {
-            background: #f1f5f9;
-            color: #1e293b;
-            padding: 10px 14px;
-            border-radius: 20px 20px 20px 4px;
-            font-size: 14px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            background: var(--gray-100);
+            color: var(--gray-800);
+            padding: 0.75rem 1rem;
+            border-radius: 18px 18px 18px 4px;
+            font-size: 0.95rem;
             max-width: 100%;
             word-wrap: break-word;
+            box-shadow: var(--shadow);
         }
 
         /* Timestamp */
         .timestamp {
-            font-size: 11px;
-            color: #94a3b8;
-            margin-top: 4px;
+            font-size: 0.75rem;
+            color: #aeb7ca;
+            margin-top: 0.25rem;
             text-align: right;
         }
 
-        /* Input area */
+        /* Chat Input */
         .chat-input {
-            background: #fff;
-            border-top: 1px solid #e2e8f0;
-            padding: 12px;
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            padding: 1rem;
             display: relative;
             align-items: center;
-            gap: 10px;
+            gap: 0.75rem;
         }
 
         .chat-input input[type="text"] {
-            border-radius: 20px;
-            border: 1px solid #cbd5e1;
-            padding: 10px 16px;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            padding: 0.75rem 1rem;
             flex: 1;
-            font-size: 14px;
+            font-size: 0.95rem;
             transition: all 0.2s ease;
+            background: var(--white);
         }
 
         .chat-input input[type="text"]:focus {
-            border-color: #2563eb;
+            border-color: var(--primary);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         .chat-input button.btn {
             border-radius: 50%;
             width: 50px;
-            height: 42px;
+            height: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #2563eb, #1e40af);
-            color: #fff;
-            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+            background: var(--primary);
+            color: var(--white);
             border: none;
-            transition: transform 0.15s ease;
+            transition: all 0.2s ease;
         }
 
         .chat-input button.btn:hover {
-            transform: scale(1.05);
+            background: var(--primary-dark);
+            transform: translateY(-1px);
         }
 
-        /* Friend list */
+        /* Friend List */
         .friend-item {
             display: flex;
             align-items: center;
-            padding: 10px;
-            gap: 12px;
-            border-radius: 12px;
+            padding: 0.75rem;
+            gap: 0.75rem;
+            border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s ease;
         }
 
         .friend-item:hover {
-            background: #f1f5ff;
+            background: var(--gray-100);
         }
 
         .friend-item img {
             border-radius: 50%;
             width: 42px;
             height: 42px;
+            border: 2px solid var(--border);
         }
 
         .friend-name {
-            font-weight: 900;
-            color: #1e293b;
+            font-weight: 600;
+            color: var(--gray-800);
             text-transform: capitalize;
         }
 
         .friend-status {
-            font-size: 12px;
-            color: #64748b;
+            font-size: 0.8rem;
+            color: var(--gray-500);
         }
 
         .chat-online {
-            color: #22c55e;
+            color: var(--green);
         }
 
         .chat-offline {
-            color: #cbd5e1;
+            color: var(--gray-300);
         }
 
-        /* Image preview */
+        /* Image Preview */
         #image-preview-container {
-            padding: 10px;
-            background: #909193;
-            border-radius: 10px;
-            border: 1px dashed #cbd5e1;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-
-            .chat-message-right .message-content,
-            .chat-message-left .message-content {
-                max-width: 90%;
-            }
+            padding: 1rem;
+            background: var(--gray-100);
+            border-radius: 8px;
+            border: 2px dashed var(--border);
+            text-align: center;
         }
 
         /* About Page Styles */
@@ -233,20 +350,78 @@
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 1rem;
+            color: var(--gray-800);
         }
 
         .about-hero p {
-            color: #64748b;
+            color: var(--gray-600);
             font-size: 1.1rem;
         }
 
         .about-features .card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.2s ease;
         }
 
         .about-features .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+
+            .chat-message-right .message-content,
+            .chat-message-left .message-content {
+                max-width: 85%;
+            }
+
+            .navbar-brand {
+                font-size: 1.25rem;
+            }
+
+            .chat-input {
+                padding: 0.75rem;
+            }
+
+            .chat-header {
+                padding: 0.75rem;
+            }
+
+            .navbar-user-profile {
+                padding: 0.25rem;
+            }
+
+            .navbar-profile-image,
+            .navbar-profile-fallback {
+                width: 28px;
+                height: 28px;
+            }
+        }
+
+        @media (max-width: 576px) {
+
+            .chat-message-right .message-content,
+            .chat-message-left .message-content {
+                max-width: 90%;
+                font-size: 0.9rem;
+            }
+
+            .about-hero h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Utilities */
+        .text-primary {
+            color: var(--primary) !important;
+        }
+
+        .bg-primary {
+            background-color: var(--primary) !important;
+        }
+
+        .border-primary {
+            border-color: var(--primary) !important;
         }
     </style>
 </head>
@@ -254,11 +429,12 @@
 <body>
     <div id="app">
         <!-- Navbar -->
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-light bg-white">
             <div class="container">
-                <a class="navbar-brand fw-bold fs-4" href="{{ url('/home') }}">
-                    <i class="fa-brands fa-rocketchat"></i> ChatApp
+                <a class="navbar-brand fw-bold" href="{{ url('/home') }}">
+                    <i class="fa-brands fa-rocketchat me-2"></i>ChatApp
                 </a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -266,59 +442,69 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left -->
+                    <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('home') }}">
-                                <i class="fa-solid fa-house me-1"></i> Home
+                                <i class="fa-solid fa-house me-1"></i>Home
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('about') }}">
-                                <i class="fa-solid fa-circle-info me-1"></i> About Us
+                                <i class="fa-solid fa-circle-info me-1"></i>About Us
                             </a>
                         </li>
                     </ul>
 
-                    <!-- Right -->
+                    <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('login') }}">
-                                        <i class="fa-solid fa-right-to-bracket me-1"></i> Login
+                                        <i class="fa-solid fa-right-to-bracket me-1"></i>Login
                                     </a>
                                 </li>
                             @endif
                             @if (Route::has('register'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('register') }}">
-                                        <i class="fa-solid fa-user-plus me-1"></i> Register
+                                        <i class="fa-solid fa-user-plus me-1"></i>Register
                                     </a>
                                 </li>
                             @endif
                         @else
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    <i class="fa-solid fa-user-circle me-1"></i> {{ Auth::user()->name }}
+                                <a id="navbarDropdown" class="navbar-user-profile dropdown-toggle" href="#"
+                                    role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    v-pre>
+                                    @if (Auth::user()->user_image)
+                                        <img src="{{ asset('storage/users/' . Auth::user()->user_image) }}"
+                                            alt="{{ Auth::user()->name }}" class="navbar-profile-image">
+                                    @else
+                                        <div class="navbar-profile-fallback">
+                                            <i class="fa-solid fa-user"></i>
+                                        </div>
+                                    @endif
+                                    <span>{{ Auth::user()->name }}</span>
                                 </a>
 
-                                <div class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="navbarDropdown">
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('home') }}">
-                                        <i class="fa-solid fa-house me-1"></i> Home
+                                        <i class="fa-solid fa-house me-2"></i>Home
                                     </a>
                                     <a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                        <i class="fa-solid fa-user-pen me-1"></i> Edit Profile
+                                        <i class="fa-solid fa-user-pen me-2"></i>Edit Profile
                                     </a>
                                     @if (Auth::user()->is_admin)
                                         <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-                                            <i class="fa-solid fa-gauge me-1"></i> Admin Panel
+                                            <i class="fa-solid fa-gauge me-2"></i>Admin Panel
                                         </a>
                                     @endif
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item text-danger" href="{{ route('logout') }}"
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+                                        <i class="fa-solid fa-right-from-bracket me-2"></i>Logout
                                     </a>
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
@@ -327,8 +513,8 @@
                             </li>
                         @endguest
                     </ul>
-                </div>
 
+                </div>
             </div>
         </nav>
 
@@ -346,7 +532,7 @@
         referrerpolicy="no-referrer"></script>
 
     <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.js"></script>
 
     <!-- Push.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.12/push.min.js" crossorigin="anonymous"

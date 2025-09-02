@@ -1,344 +1,438 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ChatApp - Real-Time Messaging Platform</title>
-  <meta name="description"
-    content="ChatApp - Secure, scalable, and modern real-time messaging platform built with Laravel, MySQL, Socket.io, Bootstrap, and JavaScript.">
-  <meta name="author" content="Flutter Developer">
-  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/893/893257.png">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Nunito', sans-serif;
-      background-color: #f5f7fa;
-      color: #1e293b;
-      scroll-behavior: smooth;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatApp - Real-Time Messaging Platform</title>
+    <meta name="description" content="ChatApp - Secure, scalable, and modern real-time messaging platform built with Laravel.">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/893/893257.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #64748b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-100: #f1f5f9;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
 
-    /* Hero */
-    .hero {
-      text-align: center;
-      padding: 100px 20px 80px;
-      background: linear-gradient(135deg, #2563eb, #4e54c8);
-      color: #fff;
-      position: relative;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+        }
 
-    .hero h1 {
-      font-size: 3.2rem;
-      font-weight: 800;
-      margin-bottom: 20px;
-    }
+        /* Hero Section */
+        .hero {
+            background: var(--primary);
+            color: white;
+            padding: 100px 0 80px;
+            text-align: center;
+        }
 
-    .hero p {
-      font-size: 1.2rem;
-      margin-bottom: 40px;
-      line-height: 1.6;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-    }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
 
-    .hero-buttons a {
-      display: inline-block;
-      margin: 10px;
-      padding: 14px 32px;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: 50px;
-      color: #fff;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.95;
+        }
 
-    .btn-login {
-      background: #1e40af;
-    }
+        .btn-hero {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 0 8px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
 
-    .btn-login:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(30, 64, 175, 0.6);
-    }
+        .btn-white {
+            background: white;
+            color: var(--primary);
+        }
 
-    .btn-register {
-      background: #9333ea;
-    }
+        .btn-white:hover {
+            background: var(--gray-50);
+            transform: translateY(-1px);
+            color: var(--primary-dark);
+        }
 
-    .btn-register:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(147, 51, 234, 0.5);
-    }
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
 
-    /* Features */
-    .features {
-      background-color: #fff;
-      padding: 80px 20px;
-      text-align: center;
-    }
+        .btn-outline:hover {
+            background: white;
+            color: var(--primary);
+        }
 
-    .features h2 {
-      font-size: 2.6rem;
-      font-weight: 700;
-      margin-bottom: 60px;
-      color: #1e40af;
-    }
+        /* Sections */
+        .section {
+            padding: 80px 0;
+        }
 
-    .feature-item {
-      background: #f9fafb;
-      border-radius: 16px;
-      padding: 30px 20px;
-      margin: 15px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
 
-    .feature-item:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-    .feature-item i {
-      font-size: 3rem;
-      color: #2563eb;
-      margin-bottom: 20px;
-    }
+        /* Features */
+        .features {
+            background: var(--gray-50);
+        }
 
-    .feature-item h5 {
-      font-weight: 700;
-      margin-bottom: 15px;
-    }
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            height: 100%;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
 
-    .feature-item p {
-      color: #64748b;
-      font-size: 1rem;
-      line-height: 1.6;
-    }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
 
-    /* Tech Stack */
-    .tech-stack {
-      background: #f9fafb;
-      padding: 80px 20px;
-      text-align: center;
-    }
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 1.5rem;
+        }
 
-    .tech-stack h2 {
-      font-size: 2.4rem;
-      font-weight: 700;
-      margin-bottom: 40px;
-      color: #1e293b;
-    }
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
 
-    .stack-icons {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
-    }
+        .feature-text {
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
 
-    .stack-icons .stack-card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 25px;
-      width: 180px;
-      transition: all 0.3s ease;
-    }
+        /* Tech Stack */
+        .tech-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all 0.2s ease;
+        }
 
-    .stack-icons .stack-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-    }
+        .tech-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
 
-    .stack-icons i {
-      font-size: 2.5rem;
-      color: #2563eb;
-      margin-bottom: 10px;
-    }
+        .tech-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
 
-    .stack-icons p {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #334155;
-    }
+        .tech-name {
+            font-weight: 500;
+            color: var(--dark);
+            text-decoration: none;
+        }
 
-    /* About */
-    .about {
-      background: #fff;
-      padding: 80px 20px;
-      text-align: center;
-    }
+        .tech-card:hover .tech-name {
+            color: var(--primary);
+        }
 
-    .about h2 {
-      font-size: 2.4rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-      color: #1e40af;
-    }
+        /* About */
+        .about {
+            background: white;
+        }
 
-    .about p {
-      max-width: 800px;
-      margin: 0 auto 20px;
-      font-size: 1.1rem;
-      color: #475569;
-      line-height: 1.8;
-    }
+        .about-content {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
 
-    .about strong {
-      color: #9333ea;
-    }
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--gray-600);
+            margin-bottom: 1.5rem;
+        }
 
-    footer {
-      background: #1e293b;
-      color: #fff;
-      text-align: center;
-      padding: 25px;
-      font-size: 0.9rem;
-    }
+        .highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
 
-    footer a {
-      color: #93c5fd;
-      text-decoration: none;
-    }
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
 
-    @media (max-width: 992px) {
-      .hero h1 {
-        font-size: 2.2rem;
-      }
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
 
-      .hero p {
-        font-size: 1rem;
-      }
+        .footer a:hover {
+            text-decoration: underline;
+        }
 
-      .hero-buttons a {
-        width: 100%;
-        max-width: 250px;
-      }
-    }
-
-    /* Scroll Animation */
-    [data-aos] {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    [data-aos].aos-animate {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  </style>
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .btn-hero {
+                display: block;
+                margin: 0.5rem auto;
+                max-width: 200px;
+            }
+        }
+    </style>
 </head>
 
 <body>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <h1>Welcome to ChatApp</h1>
+            <p>Modern, secure, and fast real-time messaging platform built with Laravel and cutting-edge technologies.</p>
+            <div>
+                <a href="{{ route('login') }}" class="btn-hero btn-white">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                </a>
+                <a href="{{ route('register') }}" class="btn-hero btn-outline">
+                    <i class="bi bi-person-plus me-2"></i>Register
+                </a>
+            </div>
+        </div>
+    </section>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1 data-aos="fade-up">Welcome to ChatApp</h1>
-    <p data-aos="fade-up" data-aos-delay="200">
-      ChatApp is a <b>modern real-time messaging platform</b> built with <b>Laravel, MySQL, Socket.io, Bootstrap,</b>
-      and <b>JavaScript</b>. Secure, instant, and seamless communication across devices.
-    </p>
-    <div class="hero-buttons" data-aos="fade-up" data-aos-delay="400">
-      <a href="{{ route('login') }}" class="btn-login"><i class="bi bi-box-arrow-in-right me-2"></i>Login</a>
-      <a href="{{ route('register') }}" class="btn-register"><i class="bi bi-person-plus me-2"></i>Register</a>
-    </div>
-  </section>
+    <!-- Features -->
+    <section class="section features">
+        <div class="container">
+            <h2 class="section-title">Key Features</h2>
+            <p class="section-subtitle">Everything you need for modern communication</p>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-chat-dots"></i>
+                        </div>
+                        <h3 class="feature-title">Real-Time Messaging</h3>
+                        <p class="feature-text">Instant message delivery with Socket.io for seamless conversations.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-shield-lock-fill"></i>
+                        </div>
+                        <h3 class="feature-title">Secure Communication</h3>
+                        <p class="feature-text">Advanced security with authentication and data protection.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <h3 class="feature-title">User Management</h3>
+                        <p class="feature-text">Complete user control with role-based access management.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-phone-fill"></i>
+                        </div>
+                        <h3 class="feature-title">Responsive Design</h3>
+                        <p class="feature-text">Perfect experience across all devices and screen sizes.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-rocket-takeoff-fill"></i>
+                        </div>
+                        <h3 class="feature-title">Fast Performance</h3>
+                        <p class="feature-text">Optimized for speed and scalability with growing users.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-gear-fill"></i>
+                        </div>
+                        <h3 class="feature-title">Easy to Use</h3>
+                        <p class="feature-text">Intuitive interface designed for the best user experience.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <!-- Features -->
-  <section class="features">
-    <h2 data-aos="fade-up">Key Features</h2>
-    <div class="row justify-content-center">
-      <div class="col-md-4 feature-item" data-aos="zoom-in">
-        <i class="bi bi-chat-dots"></i>
-        <h5>Instant Messaging</h5>
-        <p>Send and receive messages in real-time with lightning-fast delivery powered by Socket.io.</p>
-      </div>
-      <div class="col-md-4 feature-item" data-aos="zoom-in" data-aos-delay="200">
-        <i class="bi bi-shield-lock-fill"></i>
-        <h5>Secure Communication</h5>
-        <p>End-to-end security with authentication and database protection to keep your data safe.</p>
-      </div>
-      <div class="col-md-4 feature-item" data-aos="zoom-in" data-aos-delay="400">
-        <i class="bi bi-people-fill"></i>
-        <h5>User Management</h5>
-        <p>Manage user accounts with role-based access for better control and community engagement.</p>
-      </div>
-      <div class="col-md-4 feature-item" data-aos="zoom-in" data-aos-delay="600">
-        <i class="bi bi-phone-fill"></i>
-        <h5>Responsive Design</h5>
-        <p>Seamless experience across mobile, tablet, and desktop with a fully responsive layout.</p>
-      </div>
-      <div class="col-md-4 feature-item" data-aos="zoom-in" data-aos-delay="800">
-        <i class="bi bi-rocket-takeoff-fill"></i>
-        <h5>Fast & Scalable</h5>
-        <p>Optimized architecture ensures smooth performance even with growing users and messages.</p>
-      </div>
-    </div>
-  </section>
+    <!-- Tech Stack -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Built With</h2>
+            <p class="section-subtitle">Modern technologies for reliable performance</p>
+            
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-2 col-sm-6">
+                    <div class="tech-card">
+                        <div class="tech-icon">
+                            <i class="bi bi-code-slash"></i>
+                        </div>
+                        <a href="https://laravel.com/" class="tech-name" target="_blank">Laravel</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-2 col-sm-6">
+                    <div class="tech-card">
+                        <div class="tech-icon">
+                            <i class="bi bi-database-fill"></i>
+                        </div>
+                        <a href="https://www.mysql.com/" class="tech-name" target="_blank">MySQL</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-2 col-sm-6">
+                    <div class="tech-card">
+                        <div class="tech-icon">
+                            <i class="bi bi-lightning-fill"></i>
+                        </div>
+                        <a href="https://socket.io/" class="tech-name" target="_blank">Socket.io</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-2 col-sm-6">
+                    <div class="tech-card">
+                        <div class="tech-icon">
+                            <i class="bi bi-filetype-html"></i>
+                        </div>
+                        <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" class="tech-name" target="_blank">Html</a>
+                    </div>
+                </div>
 
-  <!-- Tech Stack -->
-  <section class="tech-stack">
-    <h2 data-aos="fade-up">Our Technology Stack</h2>
-    <p class="mb-5" data-aos="fade-up" data-aos-delay="200">Built with cutting-edge technologies for speed, scalability,
-      and security.</p>
-    <div class="stack-icons">
-      <div class="stack-card" data-aos="zoom-in"><i class="bi bi-code-slash"></i>
-        <a href="https://laravel.com/" style="text-decoration: none;">Laravel</a>
-      </div>
-      <div class="stack-card" data-aos="zoom-in" data-aos-delay="200"><i class="bi bi-database-fill"></i>
-        <a href="https://www.mysql.com/" style="text-decoration: none;">MySQL</a>
-      </div>
-      <div class="stack-card" data-aos="zoom-in" data-aos-delay="400"><i class="bi bi-lightning-fill"></i>
-        <a href="https://socket.io/" style="text-decoration: none;">Socket.io</a>
-      </div>
-      <div class="stack-card" data-aos="zoom-in" data-aos-delay="600"><i class="bi bi-bootstrap-fill"></i>
-        <a href="https://getbootstrap.com/" style="text-decoration: none;">Bootstrap</a>
-      </div>
-      <div class="stack-card" data-aos="zoom-in" data-aos-delay="800"><i class="bi bi-javascript"></i>
-        <a href="https://www.javascript.com/" style="text-decoration: none;">JavaScript</a>
-      </div>
-    </div>
-  </section>
+                <div class="col-md-2 col-sm-6">
+                    <div class="tech-card">
+                        <div class="tech-icon">
+                            <i class="bi bi-bootstrap-fill"></i>
+                        </div>
+                        <a href="https://getbootstrap.com/" class="tech-name" target="_blank">Bootstrap</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-2 col-sm-6">
+                    <div class="tech-card">
+                        <div class="tech-icon">
+                            <i class="bi bi-javascript"></i>
+                        </div>
+                        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" class="tech-name" target="_blank">JavaScript</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <!-- About -->
-  <section class="about">
-    <h2 data-aos="fade-up">About the Developer</h2>
-    <p data-aos="fade-up" data-aos-delay="200">
-      Hi 👋 I’m <strong>Flutter Developer</strong>, currently pursuing <strong>M.Sc. in IT &amp; CA</strong>. I
-      completed my <strong>B.Sc. in IT</strong> in 2024, and I’m passionate about building <b>scalable, real-time web
-        applications</b>.
-    </p>
-    <p data-aos="fade-up" data-aos-delay="400">
-      ChatApp is my initiative to create a secure, modern, and efficient messaging solution inspired by today’s top
-      platforms — but with simplicity and performance at its core.
-    </p>
-    <p data-aos="fade-up" data-aos-delay="600">
-      My mission is to innovate, learn continuously, and deliver apps that transform the way people connect in the
-      digital world.
-    </p>
-  </section>
+    <!-- About -->
+    <section class="section about">
+        <div class="container">
+            <div class="about-content">
+                <h2 class="section-title">About the Developer</h2>
+                
+                <p class="about-text">
+                    Hi 👋 I'm <span class="highlight">Laravel Developer</span>, currently pursuing 
+                    <span class="highlight">M.Sc. in IT & CA</span>. I completed my 
+                    <span class="highlight">B.Sc. in IT</span> in 2024.
+                </p>
+                
+                <p class="about-text">
+                    ChatApp is my project to create a secure and efficient messaging solution. 
+                    I'm passionate about building scalable web applications that connect people.
+                </p>
+                
+                <p class="about-text">
+                    My goal is to continuously learn and deliver apps that make digital communication better.
+                </p>
+            </div>
+        </div>
+    </section>
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 ChatApp | Built with ❤️ by <a href="{{ route('about') }}">Flutter Developer</a></p>
-  </footer>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 ChatApp | Built with ❤️ by <a href="{{ route('about') }}">Laravel Developer</a></p>
+        </div>
+    </footer>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Simple AOS-like fade animation
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("aos-animate");
-        }
-      });
-    }, { threshold: 0.2 });
-
-    document.querySelectorAll("[data-aos]").forEach(el => observer.observe(el));
-  </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
