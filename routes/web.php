@@ -6,21 +6,26 @@ use App\Http\Controllers\ImageUploadController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PageController;
+use Illuminate\Auth\Middleware\Authenticate;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Public Routes
+Route::view('/', 'welcome')->name('welcome');
+Route::view('/about', 'about')->name('about');
+Route::view('/features', 'features')->name('features');
+Route::view('/faq', 'faq')->name('faq');
+Route::view('/contact', 'contact')->name('contact');
 
-// Auth scaffolding (login, register, etc.)
+
+// Auth scaffolding (login, register, forgot password, etc.)
 Auth::routes();
 
-// Home route (optional user id)
-Route::get('/home/{id?}', [HomeController::class, 'index'])->name('home');
-Route::get('/about', [PageController::class, 'about'])->name('about');
 
-// Authenticated routes
+
+// Authenticated Routes
 Route::middleware('auth')->group(function () {
+
+    // User home/dashboard
+    Route::get('/home/{id?}', [HomeController::class, 'index'])->name('home');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -29,10 +34,12 @@ Route::middleware('auth')->group(function () {
     // Image Upload
     Route::post('/upload-image', [ImageUploadController::class, 'uploadImage'])->name('upload.image');
 
-    // Admin routes (protected by AdminMiddleware)
+
+    
+    // Admin Routes
     Route::prefix('admin')
         ->name('admin.')
-        ->middleware('admin') // Protect with middleware
+        ->middleware('admin')
         ->group(function () {
             Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
             Route::get('/users', [AdminController::class, 'users'])->name('users');
