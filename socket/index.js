@@ -289,14 +289,18 @@ io.on("connection", function (socket) {
                         io.to(group_id).emit("receive_message", data);
 
                         // Update unread count for the other user
-                        const unreadQuery = `SELECT COUNT(id) AS unread_message FROM chats WHERE user_id = ? AND other_user_id = ? AND is_read = 0`;
+                        const unreadQuery = `
+    SELECT COUNT(id) AS unread_message 
+    FROM chats 
+    WHERE user_id = ? AND other_user_id = ? AND is_read = 0
+`;
                         con.query(
                             unreadQuery,
                             [data.user_id, data.other_user_id],
                             function (err, results) {
-                                const unreadCount =
-                                    results[0].unread_message || 0;
-                                if (sockets[data.other_user_id]) {
+                                if (!err && sockets[data.other_user_id]) {
+                                    const unreadCount =
+                                        results[0].unread_message || 0;
                                     sockets[data.other_user_id].forEach(
                                         (sock) => {
                                             sock.emit("update_unread", {

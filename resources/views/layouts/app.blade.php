@@ -367,6 +367,38 @@
             box-shadow: var(--shadow-lg);
         }
 
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .animate-bounce {
+            animation: bounce 0.5s ease infinite;
+        }
+
+        /* Scale-up effect for updates */
+        .scale-up {
+            transform: scale(1.3);
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes flash {
+    0% { transform: scale(1); background-color: #dc3545; }
+    50% { transform: scale(1.3); background-color: #ff6b6b; }
+    100% { transform: scale(1); background-color: #dc3545; }
+}
+
+.flash-badge {
+    animation: flash 0.5s ease;
+}
+
         /* Responsive Design */
         @media (max-width: 768px) {
 

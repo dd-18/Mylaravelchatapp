@@ -31,11 +31,14 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="ms-auto" id="unread_count_{{ $friend->id }}">
+                            <div class="ms-auto position-relative" id="unread_count_{{ $friend->id }}">
                                 @if ($friend['unread_message'] > 0)
-                                    <span class="badge bg-success">{{ $friend['unread_message'] }}</span>
+                                    <span class="badge bg-danger rounded-pill animate-bounce">
+                                        {{ $friend['unread_message'] > 99 ? '99+' : $friend['unread_message'] }}
+                                    </span>
                                 @endif
                             </div>
+
                         </div>
                     </a>
                 @endforeach
@@ -478,62 +481,79 @@
 
             // Receive message (modified to handle images)
             socket.on('receive_message', function(data) {
-                if (String(data.user_id) === String(user_id) || String(data.user_id) === String(
-                        currentChatId)) {
-                    // Only append if in current chat
-                    if (currentChatLoaded) {
-                        // Remove "no messages" placeholder if exists
-                        chatMessages.find('.text-center.text-muted').remove();
+    if (String(data.user_id) === String(user_id) || String(data.user_id) === String(currentChatId)) {
+        if (currentChatLoaded) {
+            chatMessages.find('.text-center.text-muted').remove();
+            appendMessage(data);
+            scrollToBottom();
 
-                        appendMessage(data);
-                        scrollToBottom();
+            // Mark as read if from other user and we're in the chat
+            if (String(data.user_id) === String(currentChatId)) {
+                socket.emit('read_message', {
+                    from_user_id: data.user_id,
+                    to_user_id: user_id
+                });
+            }
+        }
+    } else {
+        // Update unread badge
+        var badgeContainer = $("#unread_count_" + data.user_id);
+        var currentUnreadBadge = badgeContainer.find('.badge');
+        var currentCount = currentUnreadBadge.length ? parseInt(currentUnreadBadge.text()) || 0 : 0;
+        var newCount = currentCount + 1;
+        var displayCount = newCount > 99 ? '99+' : newCount;
 
-                        // Mark as read if from other user and we're in the chat
-                        if (String(data.user_id) === String(currentChatId)) {
-                            socket.emit('read_message', {
-                                from_user_id: data.user_id,
-                                to_user_id: user_id
-                            });
-                        }
-                    }
-                } else {
-                    // Handle unread message from other users (not in current chat)
-                    var currentUnreadBadge = $("#unread_count_" + data.user_id + " .badge");
-                    var currentCount = currentUnreadBadge.length ? parseInt(currentUnreadBadge.text()) ||
-                        0 : 0;
-                    $("#unread_count_" + data.user_id).html('<span class="badge bg-success">' + (
-                        currentCount + 1) + '</span>');
+        if (currentUnreadBadge.length) {
+            currentUnreadBadge.text(displayCount).addClass("flash-badge");
+        } else {
+            badgeContainer.html('<span class="badge bg-danger rounded-pill flash-badge">' + displayCount + '</span>');
+        }
 
-                    // Show push notification for messages from other users
-                    if (typeof Push !== 'undefined' && Push.Permission.has()) {
-                        const notificationBody = data.message_type === 'image' ?
-                            (data.otherUserName || 'Someone') + " sent an image" :
-                            (data.otherUserName || 'Someone') + ": " + data.message.substring(0, 50) + (data
-                                .message.length > 50 ? '...' : '');
+        setTimeout(() => badgeContainer.find('.badge').removeClass("flash-badge"), 500);
 
-                        Push.create("New Message", {
-                            body: notificationBody,
-                            icon: "https://ui-avatars.com/api/?name=" + encodeURIComponent(data
-                                .otherUserName || 'User'),
-                            timeout: 5000,
-                            onClick: function() {
-                                window.focus();
-                                this.close();
-                            }
-                        });
-                    }
+        // Optional: push notification
+        if (typeof Push !== 'undefined' && Push.Permission.has()) {
+            const notificationBody = data.message_type === 'image' ?
+                (data.otherUserName || 'Someone') + " sent an image" :
+                (data.otherUserName || 'Someone') + ": " + data.message.substring(0, 50) + (data.message.length > 50 ? '...' : '');
+            Push.create("New Message", {
+                body: notificationBody,
+                icon: "https://ui-avatars.com/api/?name=" + encodeURIComponent(data.otherUserName || 'User'),
+                timeout: 5000,
+                onClick: function() {
+                    window.focus();
+                    this.close();
                 }
             });
+        }
+    }
+});
+
 
             // Rest of the socket event handlers remain the same
             socket.on('update_unread', function(data) {
-                if (data.unread_message > 0) {
-                    $("#unread_count_" + data.from_user_id).html('<span class="badge bg-success">' + data
-                        .unread_message + '</span>');
+                const unreadCount = data.unread_message || 0;
+                const displayCount = unreadCount > 99 ? '99+' : unreadCount;
+
+                const badgeContainer = $("#unread_count_" + data.from_user_id);
+
+                if (unreadCount > 0) {
+                    if (badgeContainer.find('.badge').length) {
+                        // Update existing badge
+                        const badge = badgeContainer.find('.badge');
+                        badge.text(displayCount);
+                        badge.addClass("scale-up");
+                        setTimeout(() => badge.removeClass("scale-up"), 300);
+                    } else {
+                        // Create new badge
+                        badgeContainer.html('<span class="badge bg-danger rounded-pill animate-bounce">' +
+                            displayCount + '</span>');
+                    }
                 } else {
-                    $("#unread_count_" + data.from_user_id).html('');
+                    badgeContainer.html(''); // remove badge if no unread
                 }
             });
+
 
             socket.on('user_connected', function(data) {
                 console.log('User connected:', data);
