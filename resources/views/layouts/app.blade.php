@@ -486,7 +486,7 @@
                                             <i class="fa-solid fa-user"></i>
                                         </div>
                                     @endif
-                                    <span>{{ Auth::user()->name }}</span>
+                                    <span style="text-transform: capitalize;">{{ Auth::user()->name }}</span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">

@@ -58,7 +58,7 @@
                              width="40" height="40"
                              style="border-radius: 50%; object-fit: cover;">
                         <div>
-                            <strong>{{ $otherUser->name }}</strong>
+                            <strong style="text-transform: capitalize;">{{ $otherUser->name }}</strong>
                             <div class="text-muted small" id="typing-in"></div>
                         </div>
                     </div>
