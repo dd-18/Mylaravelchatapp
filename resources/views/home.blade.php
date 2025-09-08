@@ -508,7 +508,7 @@
                     if (currentUnreadBadge.length) {
                         currentUnreadBadge.text(displayCount).addClass("flash-badge");
                     } else {
-                        badgeContainer.html('<span class="badge bg-danger rounded-pill flash-badge">' +
+                        badgeContainer.html('<span class="badge bg-success rounded-pill flash-badge">' +
                             displayCount + '</span>');
                     }
 
