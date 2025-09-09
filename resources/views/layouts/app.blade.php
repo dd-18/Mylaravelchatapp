@@ -256,6 +256,16 @@
             gap: 0.75rem;
         }
 
+        .typing-in {
+            font-size: 0.85rem;
+            color: #4caf50;
+            /* Green typing text */
+            font-style: italic;
+            height: 18px;
+            /* Reserve space to avoid layout shift */
+            margin-top: 2px;
+        }
+
         .chat-input input[type="text"] {
             border-radius: 24px;
             border: 1px solid var(--border);
@@ -390,14 +400,25 @@
         }
 
         @keyframes flash {
-    0% { transform: scale(1); background-color: #dc3545; }
-    50% { transform: scale(1.3); background-color: #ff6b6b; }
-    100% { transform: scale(1); background-color: #dc3545; }
-}
+            0% {
+                transform: scale(1);
+                background-color: #dc3545;
+            }
 
-.flash-badge {
-    animation: flash 0.5s ease;
-}
+            50% {
+                transform: scale(1.3);
+                background-color: #ff6b6b;
+            }
+
+            100% {
+                transform: scale(1);
+                background-color: #dc3545;
+            }
+        }
+
+        .flash-badge {
+            animation: flash 0.5s ease;
+        }
 
         /* Responsive Design */
         @media (max-width: 768px) {

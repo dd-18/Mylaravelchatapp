@@ -227,6 +227,18 @@ io.on("connection", function (socket) {
                     .join("");
 
                 socket.leave(group_id);
+
+                // 🔹 FIX: stop typing when leaving chat
+                if (typingUsers[data.user_id]) {
+                    clearTimeout(typingUsers[data.user_id]);
+                    delete typingUsers[data.user_id];
+
+                    if (sockets[data.other_user_id]) {
+                        sockets[data.other_user_id].forEach((sock) =>
+                            sock.emit("user_stopped_typing", data)
+                        );
+                    }
+                }
             });
 
             socket.on("send_message", function (data) {
@@ -350,15 +362,18 @@ io.on("connection", function (socket) {
             socket.on("user_typing", function (data) {
                 if (!data.user_id || !data.other_user_id) return;
 
+                // Clear any existing timeout for this user
                 if (typingUsers[data.user_id])
                     clearTimeout(typingUsers[data.user_id]);
 
+                // Broadcast typing to the other user
                 if (sockets[data.other_user_id]) {
                     sockets[data.other_user_id].forEach((sock) =>
                         sock.emit("user_typing", data)
                     );
                 }
 
+                // Set a new timeout to stop typing after 2s of inactivity
                 typingUsers[data.user_id] = setTimeout(() => {
                     if (sockets[data.other_user_id]) {
                         sockets[data.other_user_id].forEach((sock) =>
@@ -366,7 +381,7 @@ io.on("connection", function (socket) {
                         );
                     }
                     delete typingUsers[data.user_id];
-                }, 3000);
+                }, 2000); // 2 seconds for smoother experience
             });
 
             socket.on("disconnect", function () {
@@ -379,9 +394,15 @@ io.on("connection", function (socket) {
                         delete sockets[userId];
                         onlineUsers.delete(userId);
 
+                        // 🔹 FIX: if user was typing, notify others they stopped
                         if (typingUsers[userId]) {
                             clearTimeout(typingUsers[userId]);
                             delete typingUsers[userId];
+
+                            // let everyone know this user stopped typing
+                            socket.broadcast.emit("user_stopped_typing", {
+                                user_id: userId,
+                            });
                         }
 
                         con.query(

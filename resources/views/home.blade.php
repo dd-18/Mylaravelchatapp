@@ -43,11 +43,6 @@
                     </a>
                 @endforeach
                 <hr>
-                <div class="d-flex align-items-center mb-3">
-                    {{-- <div class="mb-0" style="font-size: x-large; font-weight: 800;">
-                         Group Chats
-                    </div> --}}
-                </div>
             </div>
 
             <!-- Main Chat Area -->
@@ -60,8 +55,15 @@
                             style="border-radius: 50%; object-fit: cover;">
                         <div>
                             <strong style="text-transform: capitalize;">{{ $otherUser->name }}</strong>
-                            <div class="text-muted small" id="typing-in"></div>
+                            <div class="text-muted small" id="typing-in"></div> <!-- Already exists, will use this -->
                         </div>
+                    </div>
+
+
+                    <!-- Typing Indicator -->
+                    <div id="typing-indicator"
+                        style="display:none; font-size:0.85rem; color:#64748b; padding: 0.25rem 1rem;">
+                        Typing...
                     </div>
 
                     <!-- Chat Messages -->
@@ -69,7 +71,6 @@
                         <div class="text-center text-muted p-3" id="loading-messages">
                             <i class="fa fa-spinner fa-spin"></i> Loading messages...
                         </div>
-                        <!-- Messages will be loaded here dynamically -->
                     </div>
 
                     <!-- Chat Input -->
@@ -208,7 +209,6 @@
     </div>
 @endsection
 
-
 @section('scripts')
     <!-- Include Socket.io & Chat JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -217,6 +217,7 @@
         var tout;
         var currentChatLoaded = false;
         var selectedImage = null;
+        var typingTimeout;
 
         $(function() {
             var user_id = "{{ auth()->id() }}";
@@ -403,7 +404,7 @@
                     socket.emit('send_message', {
                         user_id: user_id,
                         other_user_id: currentChatId,
-                        group_id: getGroupId(user_id, currentChatId), // ✅ added
+                        group_id: getGroupId(user_id, currentChatId),
                         message: textMessage,
                         message_type: 'text',
                         otherUserName: otherUserName
@@ -442,7 +443,7 @@
                         socket.emit('send_message', {
                             user_id: user_id,
                             other_user_id: currentChatId,
-                            group_id: getGroupId(user_id, currentChatId), // ✅ added
+                            group_id: getGroupId(user_id, currentChatId),
                             message: response.image_url,
                             message_type: 'image',
                             otherUserName: otherUserName
@@ -462,7 +463,8 @@
 
             // Receive message
             socket.on('receive_message', function(data) {
-                if (String(data.user_id) === String(user_id) || String(data.user_id) === String(currentChatId)) {
+                if (String(data.user_id) === String(user_id) || String(data.user_id) === String(
+                        currentChatId)) {
                     if (currentChatLoaded) {
                         chatMessages.find('.text-center.text-muted').remove();
                         appendMessage(data);
@@ -478,7 +480,8 @@
                 } else {
                     var badgeContainer = $("#unread_count_" + data.user_id);
                     var currentUnreadBadge = badgeContainer.find('.badge');
-                    var currentCount = currentUnreadBadge.length ? parseInt(currentUnreadBadge.text()) || 0 : 0;
+                    var currentCount = currentUnreadBadge.length ? parseInt(currentUnreadBadge.text()) ||
+                        0 : 0;
                     var newCount = currentCount + 1;
                     var displayCount = newCount > 99 ? '99+' : newCount;
 
@@ -503,7 +506,7 @@
                         badge.text(displayCount).addClass("scale-up");
                         setTimeout(() => badge.removeClass("scale-up"), 300);
                     } else {
-                        badgeContainer.html('<span class="badge bg-danger rounded-pill animate-bounce">' +
+                        badgeContainer.html('<span class="badge bg-success rounded-pill animate-bounce">' +
                             displayCount + '</span>');
                     }
                 } else {
@@ -525,34 +528,32 @@
                 return $('<div>').text(text).html();
             }
 
-            socket.on('user_typing', function(data) {
-                if (String(data.user_id) === String(currentChatId)) {
-                    $("#typing-in").html('<em>Typing...</em>');
-                    clearTyping();
-                }
-            });
+            $("#message-input").on("keyup", function() {
+                socket.emit("user_typing", {
+                    user_id,
+                    other_user_id: currentChatId
+                });
 
-            socket.on('user_stopped_typing', function(data) {
-                if (String(data.user_id) === String(currentChatId)) {
-                    $("#typing-in").html('');
-                }
-            });
-
-            $("#message-input").on('focus keyup', function() {
-                if (currentChatId && currentChatLoaded) {
-                    socket.emit('read_message', {
-                        from_user_id: currentChatId,
-                        to_user_id: user_id
+                clearTimeout(typingTimeout);
+                typingTimeout = setTimeout(() => {
+                    socket.emit("user_stopped_typing", {
+                        user_id,
+                        other_user_id: currentChatId
                     });
+                }, 2000);
+            });
+
+            socket.on("user_typing", function(data) {
+                if (parseInt(data.user_id) === parseInt(currentChatId)) {
+                    $("#typing-in").html('<em>Typing...</em>');
                 }
             });
 
-            function clearTyping() {
-                clearTimeout(tout);
-                tout = setTimeout(function() {
+            socket.on("user_stopped_typing", function(data) {
+                if (parseInt(data.user_id) === parseInt(currentChatId)) {
                     $("#typing-in").html('');
-                }, 3000);
-            }
+                }
+            });
 
             socket.on('connect_error', function(error) {
                 console.error('Connection failed:', error);
@@ -572,7 +573,7 @@
                     socket.emit('leave_chat', {
                         user_id: user_id,
                         other_user_id: currentChatId,
-                        group_id: getGroupId(user_id, currentChatId) // ✅ added
+                        group_id: getGroupId(user_id, currentChatId)
                     });
                 }
             });
@@ -584,4 +585,3 @@
         });
     </script>
 @endsection
-
