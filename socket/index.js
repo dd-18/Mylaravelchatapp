@@ -44,6 +44,7 @@ function handleDisconnect() {
         user: "root",
         password: "",
         database: "laravel_chatappfinal",
+        charset: "utf8mb4",
     });
 
     con.connect(function (err) {
@@ -165,22 +166,22 @@ io.on("connection", function (socket) {
             socket.on("join_chat", function (data) {
                 if (!data.user_id || !data.other_user_id) return;
 
-                const group_id =
-                    String(data.user_id) > String(data.other_user_id)
-                        ? String(data.user_id) + String(data.other_user_id)
-                        : String(data.other_user_id) + String(data.user_id);
+                const group_id = [data.user_id, data.other_user_id]
+                    .map(String)
+                    .sort((a, b) => Number(a) - Number(b))
+                    .join("");
 
                 socket.join(group_id);
 
                 // Fetch last 50 messages
                 const historyQuery = `
-                SELECT c.*, u.name as sender_name 
-                FROM chats c 
-                JOIN users u ON c.user_id = u.id 
-                WHERE c.group_id = ? 
-                ORDER BY c.created_at ASC 
-                LIMIT 50
-            `;
+        SELECT c.*, u.name as sender_name 
+        FROM chats c 
+        JOIN users u ON c.user_id = u.id 
+        WHERE c.group_id = ? 
+        ORDER BY c.created_at ASC 
+        LIMIT 50
+    `;
 
                 con.query(historyQuery, [group_id], function (err, messages) {
                     if (err) {
@@ -203,26 +204,6 @@ io.on("connection", function (socket) {
                     });
                 });
 
-                function isImageUrl(message) {
-                    if (!message) return false;
-                    const imageExtensions = [
-                        "jpg",
-                        "jpeg",
-                        "png",
-                        "gif",
-                        "svg",
-                        "webp",
-                    ];
-                    const lowerMessage = message.toLowerCase();
-                    if (lowerMessage.includes("storage/chat_images"))
-                        return true;
-                    for (let ext of imageExtensions) {
-                        if (lowerMessage.endsWith("." + ext)) return true;
-                    }
-                    if (lowerMessage.startsWith("data:image/")) return true;
-                    return false;
-                }
-
                 // Mark messages as read
                 con.query(
                     "UPDATE chats SET is_read = 1 WHERE user_id = ? AND other_user_id = ? AND is_read = 0",
@@ -240,10 +221,10 @@ io.on("connection", function (socket) {
             socket.on("leave_chat", function (data) {
                 if (!data.user_id || !data.other_user_id) return;
 
-                const group_id =
-                    String(data.user_id) > String(data.other_user_id)
-                        ? String(data.user_id) + String(data.other_user_id)
-                        : String(data.other_user_id) + String(data.user_id);
+                const group_id = [data.user_id, data.other_user_id]
+                    .map(String)
+                    .sort((a, b) => Number(a) - Number(b))
+                    .join("");
 
                 socket.leave(group_id);
             });
@@ -252,10 +233,10 @@ io.on("connection", function (socket) {
                 if (!data.user_id || !data.other_user_id || !data.message)
                     return;
 
-                const group_id =
-                    String(data.user_id) > String(data.other_user_id)
-                        ? String(data.user_id) + String(data.other_user_id)
-                        : String(data.other_user_id) + String(data.user_id);
+                const group_id = [data.user_id, data.other_user_id]
+                    .map(String)
+                    .sort((a, b) => Number(a) - Number(b))
+                    .join("");
 
                 const messageType = data.message_type || "text";
                 const time = moment().format("h:mm A");
@@ -290,10 +271,10 @@ io.on("connection", function (socket) {
 
                         // Update unread count for the other user
                         const unreadQuery = `
-    SELECT COUNT(id) AS unread_message 
-    FROM chats 
-    WHERE user_id = ? AND other_user_id = ? AND is_read = 0
-`;
+                SELECT COUNT(id) AS unread_message 
+                FROM chats 
+                WHERE user_id = ? AND other_user_id = ? AND is_read = 0
+            `;
                         con.query(
                             unreadQuery,
                             [data.user_id, data.other_user_id],

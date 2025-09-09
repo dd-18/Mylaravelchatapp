@@ -241,7 +241,7 @@
         /* Timestamp */
         .timestamp {
             font-size: 0.75rem;
-            color: #aeb7ca;
+            color: #9da4b4;
             margin-top: 0.25rem;
             text-align: right;
         }

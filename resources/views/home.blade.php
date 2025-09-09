@@ -33,7 +33,7 @@
                             </div>
                             <div class="ms-auto position-relative" id="unread_count_{{ $friend->id }}">
                                 @if ($friend['unread_message'] > 0)
-                                    <span class="badge bg-danger rounded-pill animate-bounce">
+                                    <span class="badge bg-success rounded-pill animate-bounce">
                                         {{ $friend['unread_message'] > 99 ? '99+' : $friend['unread_message'] }}
                                     </span>
                                 @endif
@@ -223,6 +223,13 @@
             var currentChatId = "{{ $otherUser ? $otherUser->id : '' }}";
             var otherUserName = "{{ $otherUser ? $otherUser->name : '' }}";
 
+            // ✅ Helper to generate same group_id as backend
+            function getGroupId(u1, u2) {
+                return [String(u1), String(u2)]
+                    .sort((a, b) => Number(a) - Number(b))
+                    .join("");
+            }
+
             var socket = io('http://localhost:3000', {
                 query: {
                     user_id: user_id
@@ -235,7 +242,8 @@
             @if ($otherUser)
                 socket.emit('join_chat', {
                     user_id: user_id,
-                    other_user_id: currentChatId
+                    other_user_id: currentChatId,
+                    group_id: getGroupId(user_id, currentChatId) // ✅ added
                 });
             @endif
 
@@ -263,18 +271,14 @@
                 });
             });
 
-
-
             function appendMessage(data) {
                 const time = data.time || formatTime(data.created_at);
                 let messageContent = '';
 
-                // Check if message is an image - handle both explicit type and URL detection
                 if (data.message_type === 'image' || isImageUrl(data.message)) {
                     messageContent =
                         `<img src="${escapeHtml(data.message)}" alt="Image" style="max-width: 200px; max-height: 200px; border-radius: 10px; cursor: pointer;" onclick="showImageModal('${escapeHtml(data.message)}')">`;
                 } else {
-                    // For text messages, also convert URLs to clickable links and handle emojis
                     messageContent = formatTextMessage(data.message);
                 }
 
@@ -298,41 +302,25 @@
                 chatMessages.append(html);
             }
 
-            // Helper function to detect if a message is an image URL
             function isImageUrl(message) {
                 if (!message) return false;
                 const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'];
                 const lowerMessage = message.toLowerCase();
 
-                // Check if it contains storage/chat_images (our upload path)
-                if (lowerMessage.includes('storage/chat_images')) {
-                    return true;
-                }
-
-                // Check if it ends with image extension
+                if (lowerMessage.includes('storage/chat_images')) return true;
                 for (let ext of imageExtensions) {
-                    if (lowerMessage.endsWith('.' + ext)) {
-                        return true;
-                    }
+                    if (lowerMessage.endsWith('.' + ext)) return true;
                 }
-
-                // Check if it's a data URL (base64 image)
-                if (lowerMessage.startsWith('data:image/')) {
-                    return true;
-                }
+                if (lowerMessage.startsWith('data:image/')) return true;
 
                 return false;
             }
 
-            // Helper function to format text messages (handle links, etc.)
             function formatTextMessage(message) {
                 let formatted = escapeHtml(message);
-
-                // Convert URLs to clickable links
                 const urlRegex = /(https?:\/\/[^\s]+)/g;
                 formatted = formatted.replace(urlRegex,
                     '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
-
                 return formatted;
             }
 
@@ -361,7 +349,6 @@
                 if (file && file.type.startsWith('image/')) {
                     selectedImage = file;
 
-                    // Show preview
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         $("#image-preview").attr('src', e.target.result);
@@ -382,14 +369,12 @@
                 $("#emoji-picker").toggle();
             });
 
-            // Hide emoji picker when clicking outside
             $(document).on('click', function(e) {
                 if (!$(e.target).closest('#emoji-btn, #emoji-picker').length) {
                     $("#emoji-picker").hide();
                 }
             });
 
-            // Add emoji to input
             $(".emoji-item").on('click', function() {
                 const emoji = $(this).text();
                 const input = $("#message-input");
@@ -399,7 +384,7 @@
                 input.focus();
             });
 
-            // Send message (modified to handle images)
+            // Send message (with group_id)
             $("#send-message-btn").on('click', function() {
                 sendMessage();
             });
@@ -410,7 +395,6 @@
 
             function sendMessage() {
                 var textMessage = $("#message-input").val().trim();
-
                 if (!currentChatLoaded) return;
 
                 if (selectedImage) {
@@ -419,11 +403,12 @@
                     socket.emit('send_message', {
                         user_id: user_id,
                         other_user_id: currentChatId,
+                        group_id: getGroupId(user_id, currentChatId), // ✅ added
                         message: textMessage,
                         message_type: 'text',
                         otherUserName: otherUserName
                     });
-                    $("#message-input").val(''); // clear after sending
+                    $("#message-input").val('');
                 }
             }
 
@@ -434,7 +419,6 @@
                 formData.append('other_user_id', currentChatId);
                 formData.append('_token', '{{ csrf_token() }}');
 
-                // Show uploading indicator
                 const uploadingHtml = `<div class="chat-message-right" id="uploading-message">
                     <div class="message-content">
                         <div class="text-center">
@@ -453,25 +437,22 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        // Remove uploading indicator
                         $("#uploading-message").remove();
 
-                        // Send image message via socket
                         socket.emit('send_message', {
                             user_id: user_id,
                             other_user_id: currentChatId,
+                            group_id: getGroupId(user_id, currentChatId), // ✅ added
                             message: response.image_url,
                             message_type: 'image',
                             otherUserName: otherUserName
                         });
 
-                        // Clear image preview
                         selectedImage = null;
                         $("#image-preview-container").hide();
                         $("#image-upload-input").val('');
                     },
                     error: function(xhr, status, error) {
-                        // Remove uploading indicator
                         $("#uploading-message").remove();
                         alert('Failed to upload image. Please try again.');
                         console.error('Image upload error:', error);
@@ -479,16 +460,14 @@
                 });
             }
 
-            // Receive message (modified to handle images)
+            // Receive message
             socket.on('receive_message', function(data) {
-                if (String(data.user_id) === String(user_id) || String(data.user_id) === String(
-                        currentChatId)) {
+                if (String(data.user_id) === String(user_id) || String(data.user_id) === String(currentChatId)) {
                     if (currentChatLoaded) {
                         chatMessages.find('.text-center.text-muted').remove();
                         appendMessage(data);
                         scrollToBottom();
 
-                        // Mark as read if from other user and we're in the chat
                         if (String(data.user_id) === String(currentChatId)) {
                             socket.emit('read_message', {
                                 from_user_id: data.user_id,
@@ -497,11 +476,9 @@
                         }
                     }
                 } else {
-                    // Update unread badge
                     var badgeContainer = $("#unread_count_" + data.user_id);
                     var currentUnreadBadge = badgeContainer.find('.badge');
-                    var currentCount = currentUnreadBadge.length ? parseInt(currentUnreadBadge.text()) ||
-                        0 : 0;
+                    var currentCount = currentUnreadBadge.length ? parseInt(currentUnreadBadge.text()) || 0 : 0;
                     var newCount = currentCount + 1;
                     var displayCount = newCount > 99 ? '99+' : newCount;
 
@@ -511,80 +488,35 @@
                         badgeContainer.html('<span class="badge bg-success rounded-pill flash-badge">' +
                             displayCount + '</span>');
                     }
-
                     setTimeout(() => badgeContainer.find('.badge').removeClass("flash-badge"), 500);
-
-                    // Optional: push notification
-                    if (typeof Push !== 'undefined' && Push.Permission.has()) {
-                        const notificationBody = data.message_type === 'image' ?
-                            (data.otherUserName || 'Someone') + " sent an image" :
-                            (data.otherUserName || 'Someone') + ": " + data.message.substring(0, 50) + (data
-                                .message.length > 50 ? '...' : '');
-                        Push.create("New Message", {
-                            body: notificationBody,
-                            icon: "https://ui-avatars.com/api/?name=" + encodeURIComponent(data
-                                .otherUserName || 'User'),
-                            timeout: 5000,
-                            onClick: function() {
-                                window.focus();
-                                this.close();
-                            }
-                        });
-                    }
                 }
             });
 
-
-            // Rest of the socket event handlers remain the same
+            // Rest of socket events unchanged...
             socket.on('update_unread', function(data) {
                 const unreadCount = data.unread_message || 0;
                 const displayCount = unreadCount > 99 ? '99+' : unreadCount;
-
                 const badgeContainer = $("#unread_count_" + data.from_user_id);
-
                 if (unreadCount > 0) {
                     if (badgeContainer.find('.badge').length) {
-                        // Update existing badge
                         const badge = badgeContainer.find('.badge');
-                        badge.text(displayCount);
-                        badge.addClass("scale-up");
+                        badge.text(displayCount).addClass("scale-up");
                         setTimeout(() => badge.removeClass("scale-up"), 300);
                     } else {
-                        // Create new badge
                         badgeContainer.html('<span class="badge bg-danger rounded-pill animate-bounce">' +
                             displayCount + '</span>');
                     }
                 } else {
-                    badgeContainer.html(''); // remove badge if no unread
+                    badgeContainer.html('');
                 }
             });
 
-
             socket.on('user_connected', function(data) {
-                console.log('User connected:', data);
                 var userId = data.id || data;
-
                 $("#status_" + userId).html('<span class="fa fa-circle chat-online"></span> Online');
-
-                if (String(userId) === String(user_id)) {
-                    return;
-                }
-
-                if (typeof Push !== 'undefined' && data.name && Push.Permission.has()) {
-                    Push.create("User Online", {
-                        body: data.name + " is now online",
-                        icon: "https://ui-avatars.com/api/?name=" + encodeURIComponent(data.name),
-                        timeout: 4000,
-                        onClick: function() {
-                            window.focus();
-                            this.close();
-                        }
-                    });
-                }
             });
 
             socket.on('user_disconnected', function(data) {
-                console.log('User disconnected:', data);
                 var userId = data.id || data;
                 $("#status_" + userId).html('<span class="fa fa-circle chat-offline"></span> Offline');
             });
@@ -615,7 +547,6 @@
                 }
             });
 
-
             function clearTyping() {
                 clearTimeout(tout);
                 tout = setTimeout(function() {
@@ -634,40 +565,23 @@
 
             socket.on('connect', function() {
                 console.log('Connected to socket server');
-
-                if (typeof Push !== 'undefined' && Push.Permission.get() === Push.Permission.DEFAULT) {
-                    Push.Permission.request();
-                }
-            });
-
-            socket.on('user_data', function(userData) {
-                console.log('Received user data:', userData);
             });
 
             $(window).on('beforeunload', function() {
                 if (currentChatId) {
                     socket.emit('leave_chat', {
                         user_id: user_id,
-                        other_user_id: currentChatId
+                        other_user_id: currentChatId,
+                        group_id: getGroupId(user_id, currentChatId) // ✅ added
                     });
                 }
             });
 
-            // Global function to show image modal
             window.showImageModal = function(imageUrl) {
                 $("#modal-image").attr('src', imageUrl);
                 $("#imageModal").modal('show');
             };
-
-            // Add hover effects for emoji items
-            $(".emoji-item").hover(
-                function() {
-                    $(this).css('background-color', '#f0f0f0');
-                },
-                function() {
-                    $(this).css('background-color', 'transparent');
-                }
-            );
         });
     </script>
 @endsection
+
