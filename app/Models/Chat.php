@@ -29,4 +29,5 @@ class Chat extends Model
     {
         return $this->belongsTo(User::class, 'other_user_id');
     }
+    public $timestamps = true;
 }

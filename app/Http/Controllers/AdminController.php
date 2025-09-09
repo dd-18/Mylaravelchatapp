@@ -63,4 +63,25 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Message deleted successfully.');
     }
+
+    public function editMessage($id)
+    {
+        $msg = Chat::findOrFail($id);
+        return view('admin.edit-message', compact('msg'));
+    }
+    public function updateMessage(Request $request, $id)
+    {
+        $msg = Chat::findOrFail($id);
+
+        // Validate the updated message
+        $validated = $request->validate([
+            'message' => 'required|string|max:5000', // adjust max length as per your requirements
+        ]);
+
+        // Update the message
+        $msg->message = $validated['message'];
+        $msg->save();
+
+        return redirect()->route('admin.messages')->with('success', 'Message updated successfully.');
+    }
 }

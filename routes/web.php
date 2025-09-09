@@ -48,5 +48,8 @@ Route::middleware('auth')->group(function () {
             // Actions
             Route::post('/users/{id}/toggle', [AdminController::class, 'toggleUserStatus'])->name('users.toggle');
             Route::delete('/messages/{id}', [AdminController::class, 'deleteMessage'])->name('messages.delete');
+            Route::get('/messages/{id}/edit', [AdminController::class, 'editMessage'])->name('messages.edit');
+            Route::post('/messages/{id}/update', [AdminController::class, 'updateMessage'])->name('messages.update');
+
         });
 });
