@@ -55,6 +55,26 @@ function handleDisconnect() {
     });
 }
 
+// Helper function to detect image URLs
+function isImageUrl(message) {
+    if (!message) return false;
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'];
+    const lowerMessage = message.toLowerCase();
+    
+    // Check if it's a chat image from storage
+    if (lowerMessage.includes('storage/chat_images')) return true;
+    
+    // Check file extensions
+    for (let ext of imageExtensions) {
+        if (lowerMessage.endsWith('.' + ext)) return true;
+    }
+    
+    // Check for base64 images
+    if (lowerMessage.startsWith('data:image/')) return true;
+    
+    return false;
+}
+
 // Socket.IO Logic
 io.on("connection", function (socket) {
     const userId = socket.handshake.query.user_id;
@@ -440,6 +460,128 @@ io.on("connection", function (socket) {
 
             socket.on("error", function (error) {
                 console.error("Socket error for user", userId, ":", error);
+            });
+
+            socket.on("edit_message", function (data) {
+                if (!data.message_id || !data.new_message || !data.user_id)
+                    return;
+
+                // Verify the message belongs to the user
+                con.query(
+                    "SELECT * FROM chats WHERE id = ? AND user_id = ?",
+                    [data.message_id, data.user_id],
+                    function (err, results) {
+                        if (err || results.length === 0) {
+                            socket.emit("error", {
+                                message: "Cannot edit this message",
+                            });
+                            return;
+                        }
+
+                        // Update the message
+                        con.query(
+                            "UPDATE chats SET message = ?, updated_at = NOW() WHERE id = ? AND user_id = ?",
+                            [data.new_message, data.message_id, data.user_id],
+                            function (err) {
+                                if (err) {
+                                    console.error(
+                                        "Error updating message:",
+                                        err
+                                    );
+                                    socket.emit("error", {
+                                        message: "Failed to update message",
+                                    });
+                                    return;
+                                }
+
+                                const group_id = [
+                                    data.user_id,
+                                    data.other_user_id,
+                                ]
+                                    .map(String)
+                                    .sort((a, b) => Number(a) - Number(b))
+                                    .join("");
+
+                                // Broadcast the edit to all users in the chat
+                                io.to(group_id).emit("message_edited", {
+                                    message_id: data.message_id,
+                                    new_message: data.new_message,
+                                    user_id: data.user_id,
+                                });
+                            }
+                        );
+                    }
+                );
+            });
+
+            socket.on("delete_message", function (data) {
+                if (!data.message_id || !data.user_id) return;
+
+                // Verify the message belongs to the user
+                con.query(
+                    "SELECT * FROM chats WHERE id = ? AND user_id = ?",
+                    [data.message_id, data.user_id],
+                    function (err, results) {
+                        if (err || results.length === 0) {
+                            socket.emit("error", {
+                                message: "Cannot delete this message",
+                            });
+                            return;
+                        }
+
+                        // Mark as deleted instead of actually deleting
+                        con.query(
+                            "UPDATE chats SET message = 'Message deleted', message_type = 'deleted', updated_at = NOW() WHERE id = ? AND user_id = ?",
+                            [data.message_id, data.user_id],
+                            function (err) {
+                                if (err) {
+                                    console.error(
+                                        "Error deleting message:",
+                                        err
+                                    );
+                                    socket.emit("error", {
+                                        message: "Failed to delete message",
+                                    });
+                                    return;
+                                }
+
+                                const group_id = [
+                                    data.user_id,
+                                    data.other_user_id,
+                                ]
+                                    .map(String)
+                                    .sort((a, b) => Number(a) - Number(b))
+                                    .join("");
+
+                                // Broadcast the deletion to all users in the chat
+                                io.to(group_id).emit("message_deleted", {
+                                    message_id: data.message_id,
+                                    user_id: data.user_id,
+                                });
+                            }
+                        );
+                    }
+                );
+            });
+
+            socket.on("get_message_info", function (data) {
+                if (!data.message_id || !data.user_id) return;
+
+                con.query(
+                    "SELECT * FROM chats WHERE id = ?",
+                    [data.message_id],
+                    function (err, results) {
+                        if (err || results.length === 0) {
+                            socket.emit("error", {
+                                message: "Message not found",
+                            });
+                            return;
+                        }
+
+                        const messageInfo = results[0];
+                        socket.emit("message_info", messageInfo);
+                    }
+                );
             });
         }
     );

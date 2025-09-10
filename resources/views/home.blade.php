@@ -169,7 +169,7 @@
                                 style="flex: 1;">
 
                             <!-- Send button -->
-                            <button class="btn btn-primary" id="send-message-btn">Send <i
+                            <button class="btn btn-primary" id="send-message-btn"><i
                                     class="fa-solid fa-paper-plane"></i></button>
                         </div>
 
@@ -224,7 +224,7 @@
             var currentChatId = "{{ $otherUser ? $otherUser->id : '' }}";
             var otherUserName = "{{ $otherUser ? $otherUser->name : '' }}";
 
-            // ✅ Helper to generate same group_id as backend
+            // Helper to generate same group_id as backend
             function getGroupId(u1, u2) {
                 return [String(u1), String(u2)]
                     .sort((a, b) => Number(a) - Number(b))
@@ -244,7 +244,7 @@
                 socket.emit('join_chat', {
                     user_id: user_id,
                     other_user_id: currentChatId,
-                    group_id: getGroupId(user_id, currentChatId) // ✅ added
+                    group_id: getGroupId(user_id, currentChatId)
                 });
             @endif
 
@@ -285,19 +285,40 @@
 
                 let html;
                 if (String(data.user_id) === String(user_id)) {
-                    html = `<div class="chat-message-right">
-                        <div class="message-content">
-                            ${messageContent}
-                            <div class="timestamp">${time}</div>
-                        </div>
-                    </div>`;
+                    // Own messages - show action buttons
+                    html = `<div class="chat-message-right" data-message-id="${data.id}">
+            <div class="message-content" style="position: relative;">
+                <div class="message-actions" style="position: absolute; top: -8px; right: -8px; display: none;">
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary btn-sm message-info-btn" title="Message Info">
+                            <i class="fa-solid fa-info-circle"></i>
+                        </button>
+                        ${data.message_type !== 'image' ? `
+                                        <button class="btn btn-outline-primary btn-sm message-edit-btn" title="Edit Message">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </button>` : ''}
+                        <button class="btn btn-outline-danger btn-sm message-delete-btn" title="Delete Message">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="message-text">${messageContent}</div>
+                <div class="timestamp">${time}</div>
+            </div>
+        </div>`;
                 } else {
-                    html = `<div class="chat-message-left">
-                        <div class="message-content">
-                            ${messageContent}
-                            <div class="timestamp">${time}</div>
-                        </div>
-                    </div>`;
+                    // Other user's messages - show only info button
+                    html = `<div class="chat-message-left" data-message-id="${data.id}">
+            <div class="message-content" style="position: relative;">
+                <div class="message-actions" style="position: absolute; top: -8px; right: -8px; display: none;">
+                    <button class="btn btn-outline-secondary btn-sm message-info-btn" title="Message Info">
+                        <i class="fa-solid fa-info-circle"></i>
+                    </button>
+                </div>
+                <div class="message-text">${messageContent}</div>
+                <div class="timestamp">${time}</div>
+            </div>
+        </div>`;
                 }
 
                 chatMessages.append(html);
@@ -582,6 +603,145 @@
                 $("#modal-image").attr('src', imageUrl);
                 $("#imageModal").modal('show');
             };
+            // Message Action Handlers
+            $(document).on('click', '.message-edit-btn', function(e) {
+                e.stopPropagation();
+                const messageDiv = $(this).closest('[data-message-id]');
+                const messageId = messageDiv.data('message-id');
+                const messageTextDiv = messageDiv.find('.message-text');
+                const currentText = messageTextDiv.text().trim();
+
+                // Create edit input
+                const editInput =
+                    `<input type="text" class="edit-input" value="${escapeHtml(currentText)}" data-original="${escapeHtml(currentText)}">`;
+                messageTextDiv.html(editInput);
+                messageDiv.addClass('message-edit-mode');
+
+                // Focus on input
+                const input = messageDiv.find('.edit-input');
+                input.focus().select();
+
+                // Handle save/cancel
+                input.on('keypress', function(e) {
+                    if (e.which === 13) { // Enter key
+                        saveEditedMessage(messageId, $(this).val(), messageDiv);
+                    } else if (e.which === 27) { // Escape key
+                        cancelEdit(messageDiv, $(this).data('original'));
+                    }
+                });
+
+                input.on('blur', function() {
+                    const newText = $(this).val().trim();
+                    const originalText = $(this).data('original');
+                    if (newText !== originalText && newText !== '') {
+                        saveEditedMessage(messageId, newText, messageDiv);
+                    } else {
+                        cancelEdit(messageDiv, originalText);
+                    }
+                });
+            });
+
+            $(document).on('click', '.message-delete-btn', function(e) {
+                e.stopPropagation();
+                const messageDiv = $(this).closest('[data-message-id]');
+                const messageId = messageDiv.data('message-id');
+
+                if (confirm('Are you sure you want to delete this message?')) {
+                    deleteMessage(messageId, messageDiv);
+                }
+            });
+
+            $(document).on('click', '.message-info-btn', function(e) {
+                e.stopPropagation();
+                const messageDiv = $(this).closest('[data-message-id]');
+                const messageId = messageDiv.data('message-id');
+                showMessageInfo(messageId);
+            });
+
+            function saveEditedMessage(messageId, newText, messageDiv) {
+                if (!newText.trim()) return;
+
+                socket.emit('edit_message', {
+                    message_id: messageId,
+                    new_message: newText.trim(),
+                    user_id: user_id,
+                    other_user_id: currentChatId
+                });
+
+                // Show loading state
+                messageDiv.find('.message-text').html('<i class="fa fa-spinner fa-spin"></i> Updating...');
+            }
+
+            function cancelEdit(messageDiv, originalText) {
+                messageDiv.removeClass('message-edit-mode');
+                messageDiv.find('.message-text').text(originalText);
+            }
+
+            function deleteMessage(messageId, messageDiv) {
+                socket.emit('delete_message', {
+                    message_id: messageId,
+                    user_id: user_id,
+                    other_user_id: currentChatId
+                });
+
+                // Show loading state
+                messageDiv.find('.message-text').html('<i class="fa fa-spinner fa-spin"></i> Deleting...');
+            }
+
+            function showMessageInfo(messageId) {
+                socket.emit('get_message_info', {
+                    message_id: messageId,
+                    user_id: user_id
+                });
+            }
+
+            // Socket event handlers for message actions
+            socket.on('message_edited', function(data) {
+                const messageDiv = $(`[data-message-id="${data.message_id}"]`);
+                messageDiv.removeClass('message-edit-mode');
+                messageDiv.find('.message-text').html(formatTextMessage(data.new_message));
+
+                // Show edited indicator
+                const timestamp = messageDiv.find('.timestamp');
+                if (!timestamp.find('.edited-indicator').length) {
+                    timestamp.append(' <span class="edited-indicator text-muted">(edited)</span>');
+                }
+            });
+
+            socket.on('message_deleted', function(data) {
+                const messageDiv = $(`[data-message-id="${data.message_id}"]`);
+                messageDiv.find('.message-text').html(
+                    '<em class="text-muted">This message was deleted</em>');
+                messageDiv.find('.message-actions').remove();
+                messageDiv.addClass('message-deleted');
+            });
+
+            socket.on('message_info', function(data) {
+                const modalHtml = `
+        <div class="modal fade" id="messageInfoModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Message Info</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Sent:</strong> ${formatTime(data.created_at)}</p>
+                        <p><strong>Status:</strong> ${data.is_read ? 'Read' : 'Delivered'}</p>
+                        ${data.updated_at && data.updated_at !== data.created_at ? 
+                            `<p><strong>Last edited:</strong> ${formatTime(data.updated_at)}</p>` : ''}
+                        <p><strong>Message Type:</strong> ${data.message_type}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+                // Remove existing modal and add new one
+                $('#messageInfoModal').remove();
+                $('body').append(modalHtml);
+                $('#messageInfoModal').modal('show');
+            });
+
         });
     </script>
 @endsection

@@ -168,6 +168,45 @@
             overflow: hidden;
         }
 
+        /* Message Actions */
+        .chat-message-right:hover .message-actions,
+        .chat-message-left:hover .message-actions {
+            display: block !important;
+        }
+
+        .message-actions .btn {
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            margin-left: 2px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .message-actions .btn:hover {
+            transform: scale(1.1);
+        }
+
+        .message-edit-mode {
+            background: #fff3cd !important;
+            border: 1px solid #ffeaa7 !important;
+        }
+
+        .edit-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+            color: inherit;
+            font-size: inherit;
+        }
+
+
         /* Chat Messages */
         .chat-messages {
             flex: 1;
@@ -299,6 +338,25 @@
             background: var(--primary-dark);
             transform: translateY(-1px);
         }
+
+        .message-status {
+            font-size: 12px;
+            color: #64748b;
+            margin-left: 5px;
+        }
+
+        .status-sent {
+            color: #64748b;
+        }
+
+        .status-delivered {
+            color: #10b981;
+        }
+
+        .status-read {
+            color: #3b82f6;
+        }
+
 
         /* Friend List */
         .friend-item {
