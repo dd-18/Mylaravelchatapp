@@ -7,8 +7,8 @@
     <div class="card shadow-sm p-4" style="max-width:480px; width:100%; border-radius:12px;">
         <div class="text-center mb-4">
             <div class="fs-2 text-primary mb-2"><i class="bi bi-person-plus"></i></div>
-            <h3 class="fw-bold">Create Your ChatApp Account</h3>
-            <p class="text-muted">Join ChatApp and start chatting securely with friends and colleagues</p>
+            <h3 class="fw-bold">Create Your {{ config('app.name', 'ChatApp') }} Account</h3>
+            <p class="text-muted">Join {{ config('app.name', 'ChatApp') }} and start chatting securely with friends and colleagues</p>
         </div>
         <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
             @csrf

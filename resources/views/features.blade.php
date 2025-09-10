@@ -5,8 +5,8 @@
 @section('content')
 <div class="container py-5">
     <div class="text-center mb-5">
-        <h1 class="fw-bold">ChatApp Features</h1>
-        <p class="text-muted fs-5">Explore the tools that make ChatApp the most reliable and secure messaging platform.</p>
+        <h1 class="fw-bold">{{ config('app.name', 'ChatApp') }} Features</h1>
+        <p class="text-muted fs-5">Explore the tools that make {{ config('app.name', 'ChatApp') }} the most reliable and secure messaging platform.</p>
     </div>
 
     <div class="row g-4">

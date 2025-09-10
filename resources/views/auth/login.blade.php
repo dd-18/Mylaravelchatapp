@@ -7,7 +7,7 @@
     <div class="card shadow-sm p-4" style="max-width:400px; width:100%; border-radius:12px;">
         <div class="text-center mb-4">
             <div class="fs-2 text-primary mb-2"><i class="bi bi-chat-dots"></i></div>
-            <h3 class="fw-bold">Sign In to ChatApp</h3>
+            <h3 class="fw-bold">Sign In to {{ config('app.name', 'ChatApp') }}</h3>
             <p class="text-muted">Enter your credentials to access your account</p>
         </div>
         <form method="POST" action="{{ route('login') }}">

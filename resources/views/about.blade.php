@@ -5,8 +5,8 @@
 @section('content')
     <div class="container py-5">
         <div class="text-center mb-5">
-            <h1 class="fw-bold">About ChatApp</h1>
-            <p class="text-muted fs-5">ChatApp is your next-gen real-time messaging solution. Stay connected securely,
+            <h1 class="fw-bold">About {{ config('app.name', 'ChatApp') }}</h1>
+            <p class="text-muted fs-5">{{ config('app.name', 'ChatApp') }} is your next-gen real-time messaging solution. Stay connected securely,
                 instantly, and anywhere in the world.</p>
         </div>
 
@@ -38,7 +38,7 @@
         </div>
 
         <div class="text-center">
-            <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Join ChatApp Today</a>
+            <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Join {{ config('app.name', 'ChatApp') }} Today</a>
         </div>
     </div>
 
