@@ -33,7 +33,13 @@
                 <a href="{{ route('register') }}">Don't have an account? Create one</a>
             </div>
         </form>
+
+        <!-- Show error for blocked user -->
+        @if(session('errors') && session('errors')->has('email'))
+            <div class="alert alert-danger mt-2">
+                {{ session('errors')->first('email') }}
+            </div>
+        @endif
     </div>
 </div>
-
 @endsection

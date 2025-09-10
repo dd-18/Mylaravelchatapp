@@ -32,7 +32,7 @@ return [
     |
     */
 
-    'lifetime' => (int) env('SESSION_LIFETIME', 120),
+    'lifetime' => (int) env('SESSION_LIFETIME', 120),  // Keeps the session alive for 120 minutes (adjustable)
 
     'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
 
@@ -214,4 +214,17 @@ return [
 
     'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Session "Remember Me" Token Lifetime
+    |--------------------------------------------------------------------------
+    |
+    | This option determines how long the "Remember Me" cookie will remain active.
+    | By default, Laravel keeps the "Remember Me" token for 5 years.
+    |
+    | You can change this duration to your preferred value.
+    |
+    */
+
+    'remember_lifetime' => 525600,  // 5 years in minutes
 ];
