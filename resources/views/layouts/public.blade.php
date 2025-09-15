@@ -106,7 +106,8 @@
         <div class="container text-center">
             <p class="mb-2">
                 &copy; {{ date('Y') }} {{ config('app.name', 'ChatApp') }} |
-                Built with ❤️ by <a href="{{ route('about') }}" class="text-primary">Laravel Developer</a>
+                Built with ❤️ for meaningful conversations.
+                <span class="d-block small text-secondary">Fast, private, and designed to keep you connected.</span>
             </p>
             <div class="d-flex justify-content-center gap-3 small flex-wrap">
                 <a href="{{ route('about') }}" class="text-light text-decoration-none">About</a>
@@ -122,50 +123,70 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+    
     <style>
+        /* Simple dark mode styles */
         body.dark-mode {
-            background-color: #121212 !important;
-            color: #f8f9fa !important;
+            background-color: #1a1a1a !important;
+            color: #e0e0e0 !important;
         }
-
+        
         body.dark-mode .navbar {
-            background-color: #1e1e1e !important;
+            background-color: #2d2d2d !important;
         }
-
-        body.dark-mode .navbar .nav-link,
-        body.dark-mode .footer,
-        body.dark-mode .footer a {
-            color: #f8f9fa !important;
+        
+        body.dark-mode .navbar-brand,
+        body.dark-mode .nav-link {
+            color: #e0e0e0 !important;
         }
-
+        
+        body.dark-mode .nav-link.active {
+            color: #66b3ff !important;
+        }
+        
+        body.dark-mode .btn-primary {
+            background-color: #0066cc;
+            border-color: #0066cc;
+        }
+        
+        body.dark-mode .btn-outline-secondary {
+            border-color: #666;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .btn-outline-secondary:hover {
+            background-color: #666;
+            color: #fff;
+        }
+        
         body.dark-mode .card {
-            background-color: #1e1e1e !important;
-            color: #f8f9fa !important;
+            background-color: #2d2d2d !important;
+            color: #e0e0e0 !important;
+            border-color: #444;
         }
-
-        body.dark-mode .btn-outline-light {
-            border-color: #f8f9fa;
-            color: #f8f9fa;
+        
+        body.dark-mode .footer {
+            background-color: #111 !important;
         }
-
-        body.dark-mode .btn-outline-light:hover {
-            background-color: #f8f9fa;
-            color: #121212;
+        
+        /* Smooth transition */
+        body, .navbar, .card {
+            transition: all 0.3s ease;
         }
     </style>
 
     @stack('scripts')
+    
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const toggleBtn = document.getElementById("themeToggle");
             const body = document.body;
-
-            // Load preference
+            
             if (localStorage.getItem("theme") === "dark") {
                 body.classList.add("dark-mode");
                 toggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i>';
             }
-
+            
             toggleBtn.addEventListener("click", () => {
                 body.classList.toggle("dark-mode");
                 if (body.classList.contains("dark-mode")) {
@@ -178,7 +199,5 @@
             });
         });
     </script>
-
 </body>
-
 </html>
