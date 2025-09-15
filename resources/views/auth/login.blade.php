@@ -18,10 +18,11 @@
                        name="email" value="{{ old('email') }}" required autofocus placeholder="you@example.com">
                 @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
-            <div class="mb-3">
+            <div class="mb-3 position-relative">
                 <label for="password" class="form-label fw-bold">Password</label>
                 <input type="password" class="form-control @error('password') is-invalid @enderror"
-                       name="password" required placeholder="Enter your password">
+                       name="password" required placeholder="Enter your password" id="password">
+                <span toggle="#password" class="bi bi-eye-slash toggle-password" style="position: absolute; right: 10px; top: 38px; cursor: pointer;"></span>
                 @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
             <div class="mb-3 form-check">
@@ -43,3 +44,22 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.querySelectorAll('.toggle-password').forEach(function (toggle) {
+        toggle.addEventListener('click', function () {
+            const input = document.querySelector(toggle.getAttribute('toggle'));
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.classList.remove('bi-eye-slash');
+                toggle.classList.add('bi-eye');
+            } else {
+                input.type = 'password';
+                toggle.classList.remove('bi-eye');
+                toggle.classList.add('bi-eye-slash');
+            }
+        });
+    });
+</script>
+@endpush

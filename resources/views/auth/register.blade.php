@@ -24,15 +24,17 @@
                        value="{{ old('email') }}" required placeholder="you@example.com">
                 @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
-            <div class="mb-3">
+            <div class="mb-3 position-relative">
                 <label class="form-label fw-bold">Password</label>
                 <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
-                       required placeholder="Min 8 characters">
+                       required placeholder="Min 8 characters" id="password">
+                <span toggle="#password" class="bi bi-eye-slash toggle-password" style="position: absolute; right: 10px; top: 38px; cursor: pointer;"></span>
                 @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
-            <div class="mb-3">
+            <div class="mb-3 position-relative">
                 <label class="form-label fw-bold">Confirm Password</label>
-                <input type="password" name="password_confirmation" class="form-control" required>
+                <input type="password" name="password_confirmation" class="form-control" required id="password_confirmation">
+                <span toggle="#password_confirmation" class="bi bi-eye-slash toggle-password" style="position: absolute; right: 10px; top: 38px; cursor: pointer;"></span>
             </div>
             <div class="mb-3">
                 <label class="form-label fw-bold">Profile Picture (Optional)</label>
@@ -47,3 +49,22 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    document.querySelectorAll('.toggle-password').forEach(function (toggle) {
+        toggle.addEventListener('click', function () {
+            const input = document.querySelector(toggle.getAttribute('toggle'));
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.classList.remove('bi-eye-slash');
+                toggle.classList.add('bi-eye');
+            } else {
+                input.type = 'password';
+                toggle.classList.remove('bi-eye');
+                toggle.classList.add('bi-eye-slash');
+            }
+        });
+    });
+</script>
+@endpush
