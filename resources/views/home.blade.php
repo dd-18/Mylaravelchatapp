@@ -1,5 +1,89 @@
 @extends('layouts.app')
 
+<style>
+    .container {
+        max-width: 100vw;
+        padding: 0.5rem;
+    }
+
+    .card {
+        flex-direction: column !important;
+        min-height: 60vh;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    @media (min-width: 992px) {
+        .card {
+            flex-direction: row !important;
+            min-height: 80vh;
+        }
+    }
+
+    .friend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 1.2rem;
+        border-radius: 8px;
+        background: none;
+        transition: background 0.2s;
+    }
+
+    .friend-item:hover {
+        background: #e6f4ff;
+    }
+
+    @media (max-width: 768px) {
+        .card {
+            flex-direction: column !important;
+            height: auto !important;
+            min-height: unset;
+            margin-bottom: 1.5rem;
+        }
+
+        .col-lg-4 {
+            max-height: 300px !important;
+            overflow-y: auto;
+        }
+
+        .col-lg-8 {
+            min-height: 400px;
+        }
+
+        .friend-item {
+            padding: 0.4rem 0.5rem;
+        }
+
+        .friend-name {
+            font-size: 1rem !important;
+        }
+
+        .friend-status {
+            font-size: 0.8rem !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .container {
+            padding: 0.2rem;
+        }
+
+        .friend-item {
+            padding: 0.2rem 0.25rem;
+            gap: 0.4rem;
+        }
+
+        .friend-name {
+            font-size: 0.92rem !important;
+        }
+
+        .friend-status {
+            font-size: 0.7rem !important;
+        }
+    }
+</style>
 @section('content')
     <div class="container">
         <div class="card" style="height: 80vh; display: flex; flex-direction: row; overflow: hidden;">
@@ -294,9 +378,9 @@
                             <i class="fa-solid fa-info-circle"></i>
                         </button>
                         ${data.message_type !== 'image' ? `
-                                        <button class="btn btn-outline-primary btn-sm message-edit-btn" title="Edit Message">
-                                            <i class="fa-solid fa-edit"></i>
-                                        </button>` : ''}
+                                            <button class="btn btn-outline-primary btn-sm message-edit-btn" title="Edit Message">
+                                                <i class="fa-solid fa-edit"></i>
+                                            </button>` : ''}
                         <button class="btn btn-outline-danger btn-sm message-delete-btn" title="Delete Message">
                             <i class="fa-solid fa-trash"></i>
                         </button>

@@ -534,7 +534,52 @@
         .border-primary {
             border-color: var(--primary) !important;
         }
-    </style>
+    
+    /* Responsive adjustments for layout & navbar */
+    @media (max-width: 992px) {
+        .navbar-brand {
+            font-size: 1.25rem;
+        }
+        .navbar {
+            flex-direction: column;
+            padding: 0.5rem;
+        }
+        .nav-link {
+            padding: 0.3rem 0.4rem !important;
+            font-size: 1rem !important;
+        }
+        .navbar-nav {
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+    }
+    @media (max-width: 768px) {
+        .navbar-brand {
+            font-size: 1.1rem;
+        }
+        .navbar {
+            padding: 0.25rem;
+        }
+        .nav-link {
+            font-size: 0.97rem !important;
+        }
+        .container {
+            padding: 0.25rem !important;
+            width: 98vw !important;
+        }
+    }
+    @media (max-width: 480px) {
+        .navbar-brand {
+            font-size: 1rem;
+        }
+        .navbar {
+            padding-bottom: 0;
+        }
+    }
+
+</style>
 </head>
 
 <body>
