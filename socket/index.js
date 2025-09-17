@@ -58,20 +58,20 @@ function handleDisconnect() {
 // Helper function to detect image URLs
 function isImageUrl(message) {
     if (!message) return false;
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'];
+    const imageExtensions = ["jpg", "jpeg", "png", "gif", "svg", "webp"];
     const lowerMessage = message.toLowerCase();
-    
+
     // Check if it's a chat image from storage
-    if (lowerMessage.includes('storage/chat_images')) return true;
-    
+    if (lowerMessage.includes("storage/chat_images")) return true;
+
     // Check file extensions
     for (let ext of imageExtensions) {
-        if (lowerMessage.endsWith('.' + ext)) return true;
+        if (lowerMessage.endsWith("." + ext)) return true;
     }
-    
+
     // Check for base64 images
-    if (lowerMessage.startsWith('data:image/')) return true;
-    
+    if (lowerMessage.startsWith("data:image/")) return true;
+
     return false;
 }
 
@@ -568,7 +568,7 @@ io.on("connection", function (socket) {
                 if (!data.message_id || !data.user_id) return;
 
                 con.query(
-                    "SELECT * FROM chats WHERE id = ?",
+                    "SELECT *, DATE_FORMAT(created_at, '%W, %M %e, %Y at %l:%i %p') as formatted_created_at, DATE_FORMAT(updated_at, '%W, %M %e, %Y at %l:%i %p') as formatted_updated_at FROM chats WHERE id = ?",
                     [data.message_id],
                     function (err, results) {
                         if (err || results.length === 0) {
@@ -579,6 +579,25 @@ io.on("connection", function (socket) {
                         }
 
                         const messageInfo = results[0];
+
+                        // Check if message was actually edited (updated_at is different from created_at)
+                        if (
+                            messageInfo.updated_at &&
+                            new Date(messageInfo.updated_at).getTime() !==
+                                new Date(messageInfo.created_at).getTime()
+                        ) {
+                            messageInfo.last_edited =
+                                messageInfo.formatted_updated_at;
+                            messageInfo.was_edited = true;
+                        } else {
+                            messageInfo.last_edited = null;
+                            messageInfo.was_edited = false;
+                        }
+
+                        // Format the original creation time
+                        messageInfo.formatted_time =
+                            messageInfo.formatted_created_at;
+
                         socket.emit("message_info", messageInfo);
                     }
                 );

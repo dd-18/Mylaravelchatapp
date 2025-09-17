@@ -5,9 +5,9 @@
 
 @section('content')
     <!-- Login Section -->
-    <section class="auth-section d-flex align-items-center justify-content-center position-relative overflow-hidden" 
-             style="min-height: 100vh; background: linear-gradient(135deg, #0d6efd, #0b5ed7);">
-        
+    <section class="auth-section d-flex align-items-center justify-content-center position-relative overflow-hidden"
+        style="min-height: 100vh; background: linear-gradient(135deg, #0d6efd, #0b5ed7);">
+
         <!-- Background Elements -->
         <div class="auth-bg position-absolute top-0 start-0 w-100 h-100" aria-hidden="true">
             <div class="floating-shapes">
@@ -26,13 +26,14 @@
                         <!-- Header -->
                         <div class="text-center mb-4">
                             <div class="auth-icon mb-3">
-                                <div class="icon-wrapper bg-primary-subtle rounded-circle d-inline-flex align-items-center justify-content-center">
+                                <div
+                                    class="icon-wrapper bg-primary-subtle rounded-circle d-inline-flex align-items-center justify-content-center">
                                     <i class="bi bi-chat-dots-fill text-primary fs-1"></i>
                                 </div>
                             </div>
                             <h2 class="fw-bold text-dark mb-2">Welcome Back!</h2>
                             <p class="text-muted">Sign in to continue your conversations</p>
-                            
+
                             <!-- Quick Stats -->
                             <div class="welcome-stats d-flex justify-content-center gap-4 mt-3 mb-2">
                                 <div class="stat-item text-center">
@@ -53,46 +54,39 @@
                         <!-- Login Form -->
                         <form method="POST" action="{{ route('login') }}" class="auth-form">
                             @csrf
-                            
+
                             <!-- Email -->
                             <div class="form-floating mb-3" data-aos="fade-up" data-aos-delay="100">
-                                <input type="email" 
-                                       name="email" 
-                                       class="form-control auth-input @error('email') is-invalid @enderror"
-                                       id="email"
-                                       value="{{ old('email') }}" 
-                                       required 
-                                       autofocus
-                                       placeholder="Email Address">
+                                <input type="email" name="email"
+                                    class="form-control auth-input @error('email') is-invalid @enderror" id="email"
+                                    value="{{ old('email') }}" required autofocus placeholder="Email Address">
                                 <label for="email">
                                     <i class="bi bi-envelope me-2"></i>Email Address
                                 </label>
-                                @error('email') 
-                                    <div class="invalid-feedback">{{ $message }}</div> 
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <!-- Password -->
                             <div class="form-floating mb-3 position-relative" data-aos="fade-up" data-aos-delay="150">
-                                <input type="password" 
-                                       name="password" 
-                                       class="form-control auth-input @error('password') is-invalid @enderror"
-                                       id="password"
-                                       required 
-                                       placeholder="Password">
+                                <input type="password" name="password"
+                                    class="form-control auth-input @error('password') is-invalid @enderror" id="password"
+                                    required placeholder="Password">
                                 <label for="password">
                                     <i class="bi bi-lock me-2"></i>Password
                                 </label>
                                 <button type="button" class="btn-toggle-password" data-target="#password">
                                     <i class="bi bi-eye-slash"></i>
                                 </button>
-                                @error('password') 
-                                    <div class="invalid-feedback">{{ $message }}</div> 
+                                @error('password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <!-- Remember Me & Forgot Password -->
-                            <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-up" data-aos-delay="200">
+                            {{-- <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-up"
+                                data-aos-delay="200">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="remember" id="remember">
                                     <label class="form-check-label text-muted small" for="remember">
@@ -102,7 +96,7 @@
                                 <a href="#" class="text-primary text-decoration-none small fw-medium">
                                     Forgot password?
                                 </a>
-                            </div>
+                            </div> --}}
 
                             <!-- Submit Button -->
                             <div class="d-grid mb-4" data-aos="fade-up" data-aos-delay="250">
@@ -115,7 +109,8 @@
 
                             <!-- Divider -->
                             <div class="divider text-center mb-4" data-aos="fade-up" data-aos-delay="300">
-                                <span class="divider-text bg-white px-3 text-muted small">New to {{ config('app.name') }}?</span>
+                                <span class="divider-text bg-white px-3 text-muted small">New to
+                                    {{ config('app.name') }}?</span>
                             </div>
 
                             <!-- Register Link -->
@@ -128,7 +123,7 @@
                         </form>
 
                         <!-- Error Display for Blocked Users -->
-                        @if(session('errors') && session('errors')->has('email'))
+                        @if (session('errors') && session('errors')->has('email'))
                             <div class="alert alert-danger mt-3 alert-modern" data-aos="shake">
                                 <i class="bi bi-exclamation-triangle me-2"></i>
                                 {{ session('errors')->first('email') }}
@@ -148,7 +143,26 @@
         </div>
     </section>
 @endsection
+@push('scripts')
+    <script>
+        document.querySelectorAll('.btn-toggle-password').forEach(function(toggle) {
+            toggle.addEventListener('click', function() {
+                const target = document.querySelector(toggle.getAttribute('data-target'));
+                const icon = toggle.querySelector('i');
 
+                if (target.type === 'password') {
+                    target.type = 'text';
+                    icon.classList.remove('bi-eye-slash');
+                    icon.classList.add('bi-eye');
+                } else {
+                    target.type = 'password';
+                    icon.classList.remove('bi-eye');
+                    icon.classList.add('bi-eye-slash');
+                }
+            });
+        });
+    </script>
+@endpush
 @push('styles')
     <style>
         /* Auth Section Background */
@@ -204,8 +218,15 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
         }
 
         /* Auth Card */
@@ -237,8 +258,15 @@
         }
 
         @keyframes pulse-ring {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.3); opacity: 0; }
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
         }
 
         /* Welcome Stats */
@@ -327,7 +355,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             transition: left 0.5s;
         }
 
@@ -376,12 +404,12 @@
             .auth-section {
                 padding: 2rem 0;
             }
-            
+
             .auth-card {
                 margin: 1rem;
                 padding: 2rem 1.5rem !important;
             }
-            
+
             .icon-wrapper {
                 width: 60px;
                 height: 60px;
@@ -420,8 +448,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Animations */
@@ -430,13 +463,14 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        .auth-form > div {
+        .auth-form>div {
             animation: slideInUp 0.6s ease forwards;
         }
 

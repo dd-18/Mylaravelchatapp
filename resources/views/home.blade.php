@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 <style>
     .container {
         max-width: 100vw;
@@ -84,6 +83,7 @@
         }
     }
 </style>
+
 @section('content')
     <div class="container">
         <div class="card" style="height: 80vh; display: flex; flex-direction: row; overflow: hidden;">
@@ -122,7 +122,6 @@
                                     </span>
                                 @endif
                             </div>
-
                         </div>
                     </a>
                 @endforeach
@@ -139,10 +138,9 @@
                             style="border-radius: 50%; object-fit: cover;">
                         <div>
                             <strong style="text-transform: capitalize;">{{ $otherUser->name }}</strong>
-                            <div class="text-muted small" id="typing-in"></div> <!-- Already exists, will use this -->
+                            <div class="text-muted small" id="typing-in"></div>
                         </div>
                     </div>
-
 
                     <!-- Typing Indicator -->
                     <div id="typing-indicator"
@@ -158,76 +156,44 @@
                     </div>
 
                     <!-- Chat Input -->
-                    <div class="chat-input" style="position: relative; ">
-                        <!-- Emoji -->
+                    <div class="chat-input" style="position: relative;">
+                        <!-- Emoji Picker -->
                         <div id="emoji-picker"
                             style="display: none; position: absolute; bottom: 60px; left: 10px; background: white; border: 1px solid #ddd; border-radius: 10px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; max-width: 300px; max-height: 200px; overflow-y: auto;">
                             <div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px;">
                                 <!-- Common emojis -->
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😀</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😂</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🤣</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😊</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😍</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🥰</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😘</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😎</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😢</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😭</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😡</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🤔</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🙄</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😴</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🤗</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🤩</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">👍</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">👎</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">👏</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🙏</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">❤️</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">💕</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">💖</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🔥</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">✨</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">💯</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🎉</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🎊</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🌟</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🌈</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🌹</span>
-                                <span class="emoji-item"
-                                    style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🎂</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😀</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😂</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🤣</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😊</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😍</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🥰</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😘</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😎</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😢</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😭</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😡</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🤔</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🙄</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">😴</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🤗</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🤩</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">👍</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">👎</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">👏</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🙏</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">❤️</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">💕</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">💖</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🔥</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">✨</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">💯</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🎉</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🎊</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🌟</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🌈</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🌹</span>
+                                <span class="emoji-item" style="cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; font-size: 20px;">🎂</span>
                             </div>
                         </div>
 
@@ -687,6 +653,7 @@
                 $("#modal-image").attr('src', imageUrl);
                 $("#imageModal").modal('show');
             };
+
             // Message Action Handlers
             $(document).on('click', '.message-edit-btn', function(e) {
                 e.stopPropagation();
@@ -800,6 +767,7 @@
                 messageDiv.addClass('message-deleted');
             });
 
+            // ENHANCED MESSAGE INFO WITH DATE DISPLAY
             socket.on('message_info', function(data) {
                 const modalHtml = `
         <div class="modal fade" id="messageInfoModal" tabindex="-1">
@@ -810,10 +778,21 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p><strong>Sent:</strong> ${formatTime(data.created_at)}</p>
+                        <p><strong>Date:</strong> ${new Date(data.created_at).toLocaleDateString('en-US', { 
+                            weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        })}</p>
+                        <p><strong>Time:</strong> ${formatTime(data.created_at)}</p>
                         <p><strong>Status:</strong> ${data.is_read ? 'Read' : 'Delivered'}</p>
-                        ${data.updated_at && data.updated_at !== data.created_at ? 
-                            `<p><strong>Last edited:</strong> ${formatTime(data.updated_at)}</p>` : ''}
+                        ${data.updated_at && new Date(data.updated_at).getTime() !== new Date(data.created_at).getTime() ? 
+                            `<p><strong>Last edited:</strong> ${new Date(data.updated_at).toLocaleDateString('en-US', { 
+                                weekday: 'long', 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                            })} at ${formatTime(data.updated_at)}</p>` : ''}
                         <p><strong>Message Type:</strong> ${data.message_type}</p>
                     </div>
                 </div>

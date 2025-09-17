@@ -22,7 +22,8 @@
         <!-- Floating Elements -->
         <div class="floating-elements position-absolute w-100 h-100" aria-hidden="true">
             <div class="floating-circle" style="top: 20%; left: 10%; animation: float 6s ease-in-out infinite;"></div>
-            <div class="floating-circle" style="top: 60%; right: 15%; animation: float 8s ease-in-out infinite reverse;"></div>
+            <div class="floating-circle" style="top: 60%; right: 15%; animation: float 8s ease-in-out infinite reverse;">
+            </div>
             <div class="floating-square" style="top: 80%; left: 20%; animation: float 7s ease-in-out infinite;"></div>
         </div>
 
@@ -31,18 +32,19 @@
             <div class="badge bg-white text-primary px-3 py-2 fs-6 mb-3" data-aos="fade-down">
                 🎉 Join 10,000+ users already chatting securely
             </div>
-            
+
             <h1 class="display-3 fw-bold mb-3" data-aos="fade-up">
                 Communication Reimagined for the <span class="text-warning">Modern World</span>
             </h1>
-            
+
             <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">
-                Experience lightning-fast messaging with military-grade encryption. 
+                Experience lightning-fast messaging with military-grade encryption.
                 <br class="d-none d-md-block">
                 Where privacy meets performance, and every conversation matters.
             </p>
 
-            <div class="hero-features d-flex justify-content-center flex-wrap gap-4 mb-4" data-aos="fade-up" data-aos-delay="150">
+            <div class="hero-features d-flex justify-content-center flex-wrap gap-4 mb-4" data-aos="fade-up"
+                data-aos-delay="150">
                 <div class="feature-pill">
                     <i class="bi bi-lightning-charge-fill text-warning"></i>
                     Sub-second delivery
@@ -56,7 +58,7 @@
                     Works everywhere
                 </div>
             </div>
-            
+
             <div data-aos="fade-up" data-aos-delay="200">
                 <a href="{{ route('register') }}" class="btn btn-light btn-lg px-5 me-3 shadow-lg hero-cta-primary">
                     <i class="bi bi-rocket-takeoff me-2"></i>
@@ -67,12 +69,12 @@
                     Sign In
                 </a>
             </div>
-            
+
             <p class="mt-4 text-white-75" data-aos="fade-up" data-aos-delay="300">
                 <i class="bi bi-check-circle-fill text-success me-2"></i>
-                No credit card required • 
+                No credit card required •
                 <i class="bi bi-check-circle-fill text-success me-2 ms-2"></i>
-                Setup in 30 seconds • 
+                Setup in 30 seconds •
                 <i class="bi bi-check-circle-fill text-success me-2 ms-2"></i>
                 Cancel anytime
             </p>
@@ -118,56 +120,60 @@
                 <div class="badge bg-primary text-white px-3 py-2 fs-6 mb-3" data-aos="fade-up">
                     ✨ Powerful Features
                 </div>
-                <h2 class="fw-bold mb-3" data-aos="fade-up" style="color: #333;">Why {{ config('app.name') }} is Different</h2>
+                <h2 class="fw-bold mb-3" data-aos="fade-up" style="color: #333;">Why {{ config('app.name') }} is Different
+                </h2>
                 <p class="text-muted fs-5" data-aos="fade-up" data-aos-delay="100">
                     Built for the future of work, with features that actually matter
                 </p>
             </div>
-            
+
             <div class="row g-4">
                 @php
                     $features = [
                         [
                             'icon' => 'bi-lightning-charge-fill',
                             'title' => 'Instant Delivery',
-                            'text' => 'Messages delivered in under 100ms using WebSocket magic and global edge infrastructure.',
+                            'text' =>
+                                'Messages delivered in under 100ms using WebSocket magic and global edge infrastructure.',
                             'color' => 'warning',
-                            'stat' => '< 100ms latency'
+                            'stat' => '< 100ms latency',
                         ],
                         [
                             'icon' => 'bi-shield-lock-fill',
                             'title' => 'Military-Grade Security',
-                            'text' => 'AES-256 encryption with perfect forward secrecy. Even we can\'t read your messages.',
+                            'text' =>
+                                'AES-256 encryption with perfect forward secrecy. Even we can\'t read your messages.',
                             'color' => 'success',
-                            'stat' => 'Zero breaches'
+                            'stat' => 'Zero breaches',
                         ],
                         [
                             'icon' => 'bi-people-fill',
                             'title' => 'Smart Group Management',
                             'text' => 'Organize teams with roles, channels, and advanced moderation tools that scale.',
                             'color' => 'primary',
-                            'stat' => 'Unlimited users'
+                            'stat' => 'Unlimited users',
                         ],
                         [
                             'icon' => 'bi-phone-fill',
                             'title' => 'Universal Access',
                             'text' => 'Native-quality experience on every device. Your conversations, everywhere.',
                             'color' => 'info',
-                            'stat' => 'All platforms'
+                            'stat' => 'All platforms',
                         ],
                         [
                             'icon' => 'bi-rocket-takeoff-fill',
                             'title' => 'Enterprise Performance',
                             'text' => 'Auto-scaling infrastructure that grows with you. From startup to enterprise.',
                             'color' => 'danger',
-                            'stat' => '99.99% uptime'
+                            'stat' => '99.99% uptime',
                         ],
                         [
                             'icon' => 'bi-bell-fill',
                             'title' => 'Intelligent Notifications',
-                            'text' => 'Smart alerts that know when to notify and when to stay quiet. Focus on what matters.',
+                            'text' =>
+                                'Smart alerts that know when to notify and when to stay quiet. Focus on what matters.',
                             'color' => 'secondary',
-                            'stat' => 'AI-powered'
+                            'stat' => 'AI-powered',
                         ],
                     ];
                 @endphp
@@ -176,10 +182,12 @@
                     <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ $i * 100 }}">
                         <div class="card h-100 text-center shadow-sm border-0 p-4 feature-card-enhanced">
                             <div class="feature-icon-wrapper mb-3">
-                                <div class="feature-icon-bg bg-{{ $feature['color'] }}-subtle rounded-circle p-3 d-inline-flex">
+                                <div
+                                    class="feature-icon-bg bg-{{ $feature['color'] }}-subtle rounded-circle p-3 d-inline-flex">
                                     <i class="bi {{ $feature['icon'] }} fs-1 text-{{ $feature['color'] }}"></i>
                                 </div>
-                                <span class="badge bg-{{ $feature['color'] }} position-absolute top-0 end-0.1 translate-middle">
+                                <span
+                                    class="badge bg-{{ $feature['color'] }} position-absolute top-0 end-0.1 translate-middle">
                                     {{ $feature['stat'] }}
                                 </span>
                             </div>
@@ -192,9 +200,11 @@
 
             <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="600">
                 <h4 class="fw-bold mb-3" style="color: #333;">
-                    Join <span class="text-primary counter" data-target="10000">0</span>+ professionals who've upgraded their communication
+                    Join <span class="text-primary counter" data-target="10000">0</span>+ professionals who've upgraded
+                    their communication
                 </h4>
-                <p class="text-muted">From Fortune 500 companies to innovative startups, teams choose {{ config('app.name') }} for mission-critical conversations.</p>
+                <p class="text-muted">From Fortune 500 companies to innovative startups, teams choose
+                    {{ config('app.name') }} for mission-critical conversations.</p>
                 <div class="d-flex justify-content-center gap-3 mt-4">
                     <div class="rating-stars">
                         <i class="bi bi-star-fill text-warning"></i>
@@ -225,7 +235,7 @@
                     </div>
                     <h2 class="fw-bold mb-3">Your Privacy is Our Promise</h2>
                     <p class="lead mb-4">
-                        Zero-knowledge architecture means we can't access your messages even if we wanted to. 
+                        Zero-knowledge architecture means we can't access your messages even if we wanted to.
                         Your conversations are yours alone.
                     </p>
                     <div class="security-features">
@@ -273,7 +283,8 @@
                 <div class="badge bg-info text-white px-3 py-2 fs-6 mb-3" data-aos="fade-up">
                     🎨 Beautiful Design
                 </div>
-                <h2 class="fw-bold mb-4" data-aos="fade-up" style="color: #333;">Experience {{ config('app.name') }} in Action</h2>
+                <h2 class="fw-bold mb-4" data-aos="fade-up" style="color: #333;">Experience {{ config('app.name') }} in
+                    Action</h2>
                 <p class="text-muted mb-5" data-aos="fade-up" data-aos-delay="100">
                     A thoughtfully crafted interface that makes complex communication feel effortless
                 </p>
@@ -285,7 +296,8 @@
                     <div class="device-mockup desktop-mockup shadow-lg">
                         <div class="device-frame">
                             <div class="device-screen">
-                                <img src="{{ asset('images/chatapp-desktop.png') }}" alt="ChatApp Desktop Interface" class="img-fluid">
+                                <img src="{{ asset('images/chatapp-desktop.png') }}" alt="ChatApp Desktop Interface"
+                                    class="img-fluid">
                             </div>
                         </div>
                         <div class="feature-callouts">
@@ -300,17 +312,18 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-4" data-aos="fade-left" data-aos-delay="200">
                     <!-- Mobile Preview -->
                     <div class="device-mockup mobile-mockup shadow-lg mb-4">
                         <div class="device-frame">
                             <div class="device-screen">
-                                <img src="{{ asset('images/chatapp-mobile.png') }}" alt="ChatApp Mobile Interface" class="img-fluid">
+                                <img src="{{ asset('images/chatapp-mobile.png') }}" alt="ChatApp Mobile Interface"
+                                    class="img-fluid">
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="preview-features">
                         <div class="feature-highlight mb-3">
                             <i class="bi bi-palette text-primary me-2"></i>
@@ -342,36 +355,39 @@
                     Real feedback from teams who've transformed their communication
                 </p>
             </div>
-            
+
             <div class="row g-4">
                 @php
                     $testimonials = [
                         [
-                            'quote' => 'ChatApp replaced three different tools for our team. The security features give us peace of mind when discussing sensitive projects.',
+                            'quote' =>
+                                'ChatApp replaced three different tools for our team. The security features give us peace of mind when discussing sensitive projects.',
                             'name' => 'Sarah Johnson',
                             'role' => 'CTO at TechFlow',
                             'company' => 'Series B Startup',
                             'avatar' => '👩‍💼',
                             'rating' => 5,
-                            'highlight' => 'Security First'
+                            'highlight' => 'Security First',
                         ],
                         [
-                            'quote' => 'The speed difference is incredible. Messages appear instantly, and the typing indicators actually work. Our remote team feels more connected.',
+                            'quote' =>
+                                'The speed difference is incredible. Messages appear instantly, and the typing indicators actually work. Our remote team feels more connected.',
                             'name' => 'Marcus Chen',
                             'role' => 'Head of Engineering',
                             'company' => 'Remote-first company',
                             'avatar' => '👨‍💻',
                             'rating' => 5,
-                            'highlight' => 'Lightning Fast'
+                            'highlight' => 'Lightning Fast',
                         ],
                         [
-                            'quote' => 'Finally, a chat app that doesn\'t drain my battery or spam me with notifications. The smart alerts are a game-changer.',
+                            'quote' =>
+                                'Finally, a chat app that doesn\'t drain my battery or spam me with notifications. The smart alerts are a game-changer.',
                             'name' => 'Lisa Rodriguez',
                             'role' => 'Product Manager',
                             'company' => 'Fortune 500',
                             'avatar' => '👩‍🚀',
                             'rating' => 5,
-                            'highlight' => 'Smart Notifications'
+                            'highlight' => 'Smart Notifications',
                         ],
                     ];
                 @endphp
@@ -405,7 +421,7 @@
                     </div>
                 @endforeach
             </div>
-            
+
             <div class="text-center mt-5" data-aos="fade-up">
                 <div class="testimonial-summary p-4 bg-white rounded-3 shadow-sm d-inline-block">
                     <div class="row g-4 text-center">
@@ -440,11 +456,12 @@
                         Transform Your Team Communication Today
                     </h2>
                     <p class="lead mb-5" data-aos="fade-up" data-aos-delay="200">
-                        Join thousands of teams who've already discovered the power of truly secure, 
+                        Join thousands of teams who've already discovered the power of truly secure,
                         lightning-fast messaging. Setup takes less than 2 minutes.
                     </p>
-                    
-                    <div class="cta-buttons d-flex justify-content-center gap-3 flex-wrap mb-4" data-aos="fade-up" data-aos-delay="300">
+
+                    <div class="cta-buttons d-flex justify-content-center gap-3 flex-wrap mb-4" data-aos="fade-up"
+                        data-aos-delay="300">
                         <a href="{{ route('register') }}" class="btn btn-light btn-lg px-5 cta-primary">
                             <i class="bi bi-rocket-takeoff me-2"></i>
                             Start Free Trial
@@ -455,8 +472,9 @@
                             Schedule Demo
                         </a>
                     </div>
-                    
-                    <div class="cta-guarantees d-flex justify-content-center flex-wrap gap-4 text-white-75" data-aos="fade-up" data-aos-delay="400">
+
+                    <div class="cta-guarantees d-flex justify-content-center flex-wrap gap-4 text-white-75"
+                        data-aos="fade-up" data-aos-delay="400">
                         <div class="guarantee-item">
                             <i class="bi bi-shield-check text-success me-2"></i>
                             30-day free trial
@@ -498,7 +516,8 @@
             pointer-events: none;
         }
 
-        .floating-circle, .floating-square {
+        .floating-circle,
+        .floating-square {
             position: absolute;
             width: 60px;
             height: 60px;
@@ -511,8 +530,15 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
         }
 
         /* Hero Elements */
@@ -537,7 +563,7 @@
 
         .hero-cta-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
         }
 
         .hero-stats .stat-item {
@@ -583,9 +609,17 @@
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .security-rings::before {
@@ -601,8 +635,15 @@
         }
 
         @keyframes ring {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.5); opacity: 0; }
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
         }
 
         /* Device Mockups */
@@ -633,13 +674,20 @@
             background: white;
             padding: 8px 12px;
             border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             font-size: 0.85rem;
             font-weight: 500;
         }
 
-        .callout-1 { top: 30%; right: -20px; }
-        .callout-2 { bottom: 30%; right: -20px; }
+        .callout-1 {
+            top: 30%;
+            right: -20px;
+        }
+
+        .callout-2 {
+            bottom: 30%;
+            right: -20px;
+        }
 
         .callout-dot {
             width: 8px;
@@ -688,7 +736,7 @@
             const target = parseInt(element.getAttribute('data-target'));
             const increment = target / 200;
             let current = 0;
-            
+
             const timer = setInterval(() => {
                 current += increment;
                 if (current >= target) {

@@ -61,6 +61,9 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="{{ route('pricing') }}" class="nav-link">Pricing</a>
+                    </li>
+                    <li class="nav-item">
                         <button id="themeToggle" class="btn btn-sm btn-outline-secondary ms-lg-3 mt-2 mt-lg-0">
                             <i class="bi bi-moon-fill"></i>
                         </button>
@@ -123,70 +126,72 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
-    
+
     <style>
         /* Simple dark mode styles */
         body.dark-mode {
             background-color: #1a1a1a !important;
             color: #e0e0e0 !important;
         }
-        
+
         body.dark-mode .navbar {
             background-color: #2d2d2d !important;
         }
-        
+
         body.dark-mode .navbar-brand,
         body.dark-mode .nav-link {
             color: #e0e0e0 !important;
         }
-        
+
         body.dark-mode .nav-link.active {
             color: #66b3ff !important;
         }
-        
+
         body.dark-mode .btn-primary {
             background-color: #0066cc;
             border-color: #0066cc;
         }
-        
+
         body.dark-mode .btn-outline-secondary {
             border-color: #666;
             color: #e0e0e0;
         }
-        
+
         body.dark-mode .btn-outline-secondary:hover {
             background-color: #666;
             color: #fff;
         }
-        
+
         body.dark-mode .card {
             background-color: #2d2d2d !important;
             color: #e0e0e0 !important;
             border-color: #444;
         }
-        
+
         body.dark-mode .footer {
             background-color: #111 !important;
         }
-        
+
         /* Smooth transition */
-        body, .navbar, .card {
+        body,
+        .navbar,
+        .card {
             transition: all 0.3s ease;
         }
     </style>
 
     @stack('scripts')
-    
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const toggleBtn = document.getElementById("themeToggle");
             const body = document.body;
-            
+
             if (localStorage.getItem("theme") === "dark") {
                 body.classList.add("dark-mode");
                 toggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i>';
             }
-            
+
             toggleBtn.addEventListener("click", () => {
                 body.classList.toggle("dark-mode");
                 if (body.classList.contains("dark-mode")) {
@@ -200,4 +205,5 @@
         });
     </script>
 </body>
+
 </html>

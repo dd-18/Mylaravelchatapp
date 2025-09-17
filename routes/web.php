@@ -14,6 +14,8 @@ Route::view('/about', 'about')->name('about');
 Route::view('/features', 'features')->name('features');
 Route::view('/faq', 'faq')->name('faq');
 Route::view('/contact', 'contact')->name('contact');
+Route::view('/pricing', 'pricing')->name('pricing');
+
 
 
 // Auth scaffolding (login, register, forgot password, etc.)
@@ -35,7 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/upload-image', [ImageUploadController::class, 'uploadImage'])->name('upload.image');
 
 
-    
+
     // Admin Routes
     Route::prefix('admin')
         ->name('admin.')
@@ -50,6 +52,5 @@ Route::middleware('auth')->group(function () {
             Route::delete('/messages/{id}', [AdminController::class, 'deleteMessage'])->name('messages.delete');
             Route::get('/messages/{id}/edit', [AdminController::class, 'editMessage'])->name('messages.edit');
             Route::post('/messages/{id}/update', [AdminController::class, 'updateMessage'])->name('messages.update');
-
         });
 });
